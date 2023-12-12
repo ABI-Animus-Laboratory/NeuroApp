@@ -21,6 +21,7 @@ async def root():
 
 @app.get("/hello/{name}")
 async def say_hello(name: str):
+    print(name)
     return {"message": f"Hello {name}"}
 
 @app.get("/api/model")
