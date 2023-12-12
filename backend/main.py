@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse, Response
+from one_neuron import simulation
 
 app = FastAPI()
 
@@ -19,10 +20,10 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    print(name)
-    return {"message": f"Hello {name}"}
+@app.get("/hello/{current}")
+async def get_voltage(current: int):
+    volt = simulation(current)
+    return {"result": volt}
 
 @app.get("/api/model")
 async def get_display_model():

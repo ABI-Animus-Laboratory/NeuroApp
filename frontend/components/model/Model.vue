@@ -1,10 +1,22 @@
 <template>
   <div class="model">
-    {{ modelName }}
-    <div
-        ref="baseDomObject"
-        :class="mdAndUp ? 'baseDom-md' : 'baseDom-sm'"
-      />
+    <div class="top-center-container">
+      <!-- Display voltage at the top -->
+      <p v-if="isVoltageVisible" class="voltage-output">Voltage: {{ voltage }}</p>
+
+      <!-- Slider below the voltage -->
+      <div class="slider-container">
+        <input type="range" v-model="current" min="0" max="500" class="current-input" />
+        <span class="slider-value">{{ current }}</span>
+      </div>
+
+      <!-- Start/Stop buttons centered below the slider -->
+      <div class="button-container">
+        <button @click="startcalculateVoltage" class="start-button">Start Updates</button>
+        <button @click="stopcalculateVoltage" class="stop-button">Stop Updates</button>
+      </div>
+    </div>
+    <div ref="baseDomObject" :class="mdAndUp ? 'baseDom-md' : 'baseDom-sm'" />
   </div>
 </template>
 
@@ -22,26 +34,20 @@ export default {
       modelName: "Model load on here!",
       helloworld:"",
       model:null,
+      current: 0,
+      voltage: null,
+      intervalId: null,
+      isVoltageVisible: false,
+      updateInterval: 1000 // Set the update interval in milliseconds
     };
   },
 
   async fetch() {
-     await axios.get('http://127.0.0.1:8000/hello/dev').then((res)=>{
-      console.log(res.data);
-      })
-    await axios.get('http://127.0.0.1:8000/api/model',{ responseType: "blob" }).then((res)=>{
-      // console.log(res.data);
-    })
-    // this.helloworld = await fetch(
-    //     'http://127.0.0.1:8000/hello/model'
-    //   ).then(res => res.json())
-    //   console.log(this.helloworld);
+      this.model = await fetch(
+        'http://127.0.0.1:8000/api/model'
+      ).then(res => res.blob())
 
-    //   this.model = await fetch(
-    //     'http://127.0.0.1:8000/api/model'
-    //   ).then(res => res.blob())
-
-    //   console.log(this.model);
+      console.log(this.model);
     },
 
   created: async function (){
@@ -65,6 +71,19 @@ export default {
     this.baseRenderer = this.$baseRenderer();
     const baseContainer = this.$baseContainer();
     this.container = this.$refs.baseDomObject;
+
+    // Set initial styles and values
+    this.container.style.display = "flex";
+    this.container.style.flexDirection = "column";
+    this.container.style.alignItems = "center";
+    this.container.style.justifyContent = "flex-start";
+    this.container.style.height = "200px"; // Set a fixed height for the top container
+
+    // Set initial value of voltage to null or an empty string
+    this.voltage = null; // You can set it to an empty string as well
+
+    // Ensure visibility is set to true when the component is mounted
+    this.isVoltageVisible = true;
     setTimeout(() => {
       this.mdAndUp
         ? (baseContainer.style.height = "100vh")
@@ -81,9 +100,42 @@ export default {
         this.scene.onWindowResize();
       }, 500);
     });
+
   },
 
   methods: {
+    async updateVoltage() {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
+        const data = await response.json();
+        this.voltage = data.result;
+        this.isVoltageVisible = true;
+      } catch (error) {
+        console.error("Error updating voltage:", error);
+      }
+    },
+
+    startcalculateVoltage() {
+      // Set up a recurring interval to call calculateVoltage with the updated current value
+      this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
+    },
+
+    stopcalculateVoltage() {
+      // Clear the interval when it's no longer needed
+      clearInterval(this.intervalId);
+    },
+
+    async calculateVoltage() {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
+        const data = await response.json();
+        this.voltage = data.result;
+      } catch (error) {
+        console.error("Error calculating voltage:", error);
+      }
+    },
+
+
     async start(){
       console.log("load model functions.");
       // get model from backend
@@ -121,10 +173,46 @@ export default {
 
   beforeDestroy() {
     // Wirte code before destory this component
+    this.stopcalculateVoltage();
   }
 };
 </script>
 
 <style scoped lang="scss">
+
+.model {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+.top-center-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.current-input {
+  padding: 5px;
+  font-size: 16px;
+}
+
+.calculate-button {
+  margin-top: 10px;
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.voltage-output {
+  font-size: 18px;
+}
+
+.slider-value {
+  margin-left: 10px;
+  margin-top: 2px;
+  font-size: 18px;
+}
 
 </style>
