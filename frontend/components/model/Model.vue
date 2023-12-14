@@ -3,6 +3,7 @@
     <div class="top-center-container">
       <!-- Display voltage at the top -->
       <p v-if="isVoltageVisible" class="voltage-output">Voltage: {{ voltage }}</p>
+      <p v-if="isTimeVisible" class="voltage-output">Time: {{ time }}</p>
 
       <!-- Slider below the voltage -->
       <div class="slider-container">
@@ -36,8 +37,13 @@ export default {
       model:null,
       current: 0,
       voltage: null,
+      voltages: [],
       intervalId: null,
       isVoltageVisible: false,
+      isTimeVisible: false,
+      times: [],
+      time: null,
+      reset: false,
       updateInterval: 1000 // Set the update interval in milliseconds
     };
   },
@@ -79,11 +85,15 @@ export default {
     this.container.style.justifyContent = "flex-start";
     this.container.style.height = "200px"; // Set a fixed height for the top container
 
-    // Set initial value of voltage to null or an empty string
-    this.voltage = null; // You can set it to an empty string as well
+    // Set initial value of voltage to null
+    this.voltage = null;
+    this.voltages = [];
+    this.time = null;
+    this.times = [];
 
     // Ensure visibility is set to true when the component is mounted
     this.isVoltageVisible = true;
+    this.isTimeVisible = true;
     setTimeout(() => {
       this.mdAndUp
         ? (baseContainer.style.height = "100vh")
@@ -104,16 +114,25 @@ export default {
   },
 
   methods: {
-    async updateVoltage() {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
-        const data = await response.json();
-        this.voltage = data.result;
-        this.isVoltageVisible = true;
-      } catch (error) {
-        console.error("Error updating voltage:", error);
-      }
-    },
+    // async updateVoltage() {
+    //   try {
+    //     const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
+    //     const data = await response.json();
+    //
+    //     // Update the voltages array
+    //     this.voltages = data;
+    //
+    //     // Update the voltage property to the first element of the array
+    //     if (this.voltages.length > 0) {
+    //       this.voltage = this.voltages[this.voltages.length - 1];
+    //       this.isVoltageVisible = true;
+    //     } else {
+    //       console.warn("Received an empty voltages array");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error updating voltage:", error);
+    //   }
+    // },
 
     startcalculateVoltage() {
       // Set up a recurring interval to call calculateVoltage with the updated current value
@@ -129,9 +148,27 @@ export default {
       try {
         const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
         const data = await response.json();
-        this.voltage = data.result;
+
+        // Update the voltages array
+        this.voltages = data.voltage;
+        this.times = data.times;
+
+        // Update the voltage property to the first element of the array
+        if (this.voltages.length > 0) {
+          this.voltage = this.voltages[this.voltages.length - 1];
+          this.isVoltageVisible = true;
+        } else {
+          console.warn("Received an empty voltages array");
+        }
+                // Update the voltage property to the first element of the array
+        if (this.times.length > 0) {
+          this.time = this.times[this.times.length - 1];
+          this.isTimeVisible = true;
+        } else {
+          console.warn("Received an empty voltages array");
+        }
       } catch (error) {
-        console.error("Error calculating voltage:", error);
+        console.error("Error updating voltage:", error);
       }
     },
 
@@ -179,7 +216,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .model {
   display: flex;
   flex-direction: column;
@@ -193,26 +229,32 @@ export default {
   margin-top: 20px;
 }
 
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .current-input {
   padding: 5px;
   font-size: 16px;
 }
 
-.calculate-button {
-  margin-top: 10px;
-  padding: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.voltage-output {
-  font-size: 18px;
-}
-
 .slider-value {
-  margin-left: 10px;
-  margin-top: 2px;
+  margin-top: 5px; /* Move the slider value down a bit */
   font-size: 18px;
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-around; /* Adjusted to space around for the buttons */
+  align-items: center;
+  margin-top: 10px;
+}
+
+.start-button,
+.stop-button {
+  margin-top: 10px;
+}
 </style>
+

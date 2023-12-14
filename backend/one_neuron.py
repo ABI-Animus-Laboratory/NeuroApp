@@ -19,6 +19,6 @@ def simulation(Iin):
     nest.Simulate(dtfl)
     mms = multimeter.get('events')
     Vms = list(mms['V_m'])
-    ts = mms['times']
+    ts = list(mms['times'])
     # Ims = [Iin] * len(ts)
-    return Vms
+    return Vms, ts
