@@ -57,8 +57,17 @@ export default {
     ],
     script: [
       {
+        "data-dojo-config": "async: 1, dojoBlankHtmlUrl: '/blank.html'",
+        src: "//ajax.googleapis.com/ajax/libs/dojo/1.11.2/dojo/dojo.js",
+      },
+      {
         type: "text/javascript",
         src: "js/tailwindcss.js",
+      },
+      {
+        hid: "chartMaker",
+        type: "text/javascript",
+        src: "js/LVPandECG.js",
       },
       {
         src: "https://www.googletagmanager.com/gtag/js?id=G-LXD5LJXP2Y",

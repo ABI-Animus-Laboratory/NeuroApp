@@ -11,6 +11,11 @@
         "dataFile": "heart-main",
         "category": "success",
         "subTitle": "subSuccess",
+        "ecg": {
+          "name": "Normal",
+          "path": "ECG/NormalECG.json",
+          "description": "Electrical pulses make the heart muscle contract"
+        },
         "model": { "name": "NoInfarct" }
       }
     }

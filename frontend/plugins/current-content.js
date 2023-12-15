@@ -20,6 +20,9 @@ export default (context, inject) => {
   inject("demoIcon", () => {
     return context.store.getters.getCurrentContent.demoIcon;
   }),
+  inject("ecg", () => {
+    return context.store.getters.getCurrentContent.ecg;
+  }),
   inject("model", () => {
     return context.store.getters.getCurrentContent.model;
   });
