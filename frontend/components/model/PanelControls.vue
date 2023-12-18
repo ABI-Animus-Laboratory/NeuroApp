@@ -29,7 +29,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   export default {
     data() {
@@ -48,7 +48,7 @@
         return this.$vuetify.breakpoint.mdAndUp;
       },
     },
-  
+
     mounted() {
       if (process.client) {
         window.ecgDone = false; //to prevent unexpected problem of chart being loaded twice
@@ -87,25 +87,25 @@
     },
   };
   </script>
-  
+
   <style scoped lang="scss">
   #ecgDescription,
   #lvpDescription {
     width: 90%;
   }
-  
+
   .trace-box-lg,
   .item {
     min-width: 280px;
     max-width: 25vw;
   }
-  
+
   .trace-box-sm {
     // width: 80vw;
     // display: block;
     // margin: 0 auto;
   }
-  
+
   .rightECG-sm {
     width: 50vw;
     height: 20vw;
@@ -148,4 +148,3 @@
     width: 100vw;
   }
   </style>
-  

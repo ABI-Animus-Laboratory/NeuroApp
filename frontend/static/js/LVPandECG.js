@@ -71,7 +71,7 @@ function loadChart(ecg, category, timeOffset) {
           });
           ecgIndicator = ECGchart.getPlot("time");
 
-          
+
 
           timeLineOffset = timeOffset;
 
@@ -194,14 +194,14 @@ function updateIndicator(normaliseTime) {
   if (
     ecgIndicator &&
     currentECGName != " None" &&
-    ecgName === currentECGName 
+    ecgName === currentECGName
   ) {
     var ecgTime = normaliseTime * (maxECGTime - minECGTime) + minECGTime;
     if (timeLineOffset != 0.0 && timeLineOffset) {
 
       ecgTime = ecgTime + timeLineOffset;
 
-     
+
       if (ecgTime > maxECGTime) {
         ecgTime = ecgTime - maxECGTime + minECGTime;
       } else if (ecgTime < minECGTime) {
@@ -215,4 +215,8 @@ function updateIndicator(normaliseTime) {
     ecgIndicator.dirty = true;
     ecgIndicator.render();
   }
+}
+
+function updatePlot() {
+  ECGchart.render();
 }

@@ -133,6 +133,22 @@ export default {
     //     console.error("Error updating voltage:", error);
     //   }
     // },
+    // saveVoltageData(data) {
+    //   // Map the voltage and time arrays to an array of objects with "y" and "x" keys
+    //   const jsonData = data.voltages.map((y, index) => ({
+    //     y,
+    //     x: data.times[index],
+    //   }));
+    //
+    //   // Convert the array to a JSON-formatted string
+    //   const jsonString = JSON.stringify(jsonData, null, 2);
+    //
+    //   // Specify the file path and name
+    //   const filePath = '/Users/chrisneville-dowler/NeuroApp/frontend/static/ECG/NormalECG.json';
+    //
+    //   // Write the JSON data to the file
+    //   fs.writeFileSync(filePath, jsonString, 'utf-8');
+    // },
 
     startcalculateVoltage() {
       // Set up a recurring interval to call calculateVoltage with the updated current value
@@ -160,16 +176,19 @@ export default {
         } else {
           console.warn("Received an empty voltages array");
         }
-                // Update the voltage property to the first element of the array
+        // Update the time property to the first element of the array
         if (this.times.length > 0) {
           this.time = this.times[this.times.length - 1];
           this.isTimeVisible = true;
         } else {
           console.warn("Received an empty voltages array");
         }
+        this.saveVoltageData({ voltages: this.voltages, times: this.times });
+
       } catch (error) {
         console.error("Error updating voltage:", error);
       }
+
     },
 
 
