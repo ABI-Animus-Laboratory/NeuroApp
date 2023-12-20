@@ -34,14 +34,17 @@ async def root():
 
 @app.get("/hello/{current}")
 async def get_voltage(current: int):
+
     [voltage, times] = simulation(current)
 
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(voltage, times)]
     # Save voltage data to JSON file
-    save_voltage_data(voltage_data)
+    # save_voltage_data(voltage_data)
 
-    return {"voltage": voltage, "times": times}
+    # return {"voltage": voltage, "times": times}
+    return voltage_data
+
 
 
 @app.get("/api/model")

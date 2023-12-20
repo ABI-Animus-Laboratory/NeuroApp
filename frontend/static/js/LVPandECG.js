@@ -29,7 +29,6 @@ function loadChart(ecg, category, timeOffset) {
       ], function (declare, domConstruct, Chart, StackedLines, Grid, Claro, axis2dDefault, plot2dIndicator, tomTheme) {
         ready(function () {
           //   var ECGchart;
-
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
@@ -39,37 +38,59 @@ function loadChart(ecg, category, timeOffset) {
           ECGchart.setTheme(tomTheme);
           /* add the x-axis */
           ECGchart.addAxis("x", {
-            type: "Invisible",
-            majorLabels: false,
-            minorTicks: false,
-            minorLabels: false,
-            microTicks: false,
+            // type: "Invisible",
+            title: "time (s)",
+            titleOrientation: "away",
+            titleFontColor: "#fff",
+            fontColor: "#fff",
+            majorLabels: true,
+            minorTicks: true,
+            minorLabels: true,
+            microTicks: true,
+            min: 0,
+            max: 500,
           });
           /* add the y-axis */
           ECGchart.addAxis("y", {
             // type: "Invisible",
             vertical: true,
+            title: "Membrane Potential (mV)",
+            titleFontColor: "#fff",
             majorLabels: true,
-            majorTickStep: 200,
-            minorTick: { color: "rgba(0,0,0,0)" },
-            majorTick: { color: "rgba(0,0,0,0)" },
-            minorLabels: false,
+            minorTicks: true,
+            minorLabels: true,
+            microTicks: true,
+            min: -75,
+            max: -50,
             font: "normal normal normal 10pt Helvetica",
-            fontColor: "rgba(0,0,0,0)",
-            stroke: [0, 0, 0, 0],
+            fontColor: "#fff",
+            labels: [
+              { value: -75, text: "-75 mV" },
+              { value: -70, text: "-70 mV" },
+              { value: -65, text: "-65 mV" },
+              { value: -60, text: "-60 mV" },
+              { value: -55, text: "-55 mV" },
+              { value: -50, text: "-55 mV" },
+            ],
+
+            // Set tick positions on the y-axis
+            majorTicks: [
+              -75, -70, -65, -60, -55, -50
+            ],
+            // stroke: [0, 0, 0, 0],
           });
-          ECGchart.addPlot("time", {
-            type: plot2dIndicator,
-            vertical: true,
-            lineStroke: { color: "#00ccff" },
-            labels: null,
-            stroke: null,
-            outline: null,
-            fill: null,
-            offset: { y: -7, x: -10 },
-            values: 0.0,
-          });
-          ecgIndicator = ECGchart.getPlot("time");
+          // ECGchart.addPlot("time", {
+          //   type: plot2dIndicator,
+          //   vertical: true,
+          //   lineStroke: { color: "#00ccff" },
+          //   labels: null,
+          //   stroke: null,
+          //   outline: null,
+          //   fill: null,
+          //   offset: { y: -7, x: -10 },
+          //   values: 0.0,
+          // });
+          // ecgIndicator = ECGchart.getPlot("time");
 
 
 
@@ -102,6 +123,7 @@ function onECGLoaded(xmlhttp, category, axisName) {
   return function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
       var viewData = JSON.parse(xmlhttp.responseText);
+      console.log(viewData.length)
       var newViewData = rescaleXAxis(viewData);
       //   defaultEcgData = rescaleXAxis(defaultEcgData);
       ECGs[axisName] = newViewData;
@@ -180,12 +202,12 @@ var showECGInternal = function (category, axisName) {
 
 
 var rescaleXAxis = function (viewData) {
-  var len = viewData.length;
-  var max_x = viewData[len - 1].x;
-  var min_x = viewData[0].x;
-  for (var i = 0; i < len; i++) {
-    viewData[i].x = ((viewData[i].x - min_x) / (max_x - min_x)) * 100.0;
-  }
+  // var len = viewData.length;
+  // var max_x = viewData[len - 1].x;
+  // var min_x = viewData[0].x;
+  // for (var i = 0; i < len; i++) {
+  //   viewData[i].x = ((viewData[i].x - min_x) / (max_x - min_x)) * 100.0;
+  // }
 
   return viewData;
 };
