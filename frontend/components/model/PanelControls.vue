@@ -8,29 +8,18 @@
       "
     >
       <div class="top-center-container">
-        <!-- Display voltage at the top -->
-<!--        <p v-if="isVoltageVisible" class="voltage-output">Voltage: {{ voltage }}</p>-->
-<!--        <p v-if="isTimeVisible" class="voltage-output">Time: {{ time }}</p>-->
         <v-subheader class="custom-subheader">
           Input Current (pA)
         </v-subheader>
-
+        <!-- Slider to control current -->
         <v-slider
               v-model="current"
               max="500"
               min="0"
-              thumb-color="red"
+              thumb-color="blue"
               thumb-label="always"
         ></v-slider>
-
-        <!-- Slider below the voltage -->
-<!--        <div class="slider-container">-->
-<!--&lt;!&ndash;          <input type="range" v-model="current" min="0" max="500" class="current-input" />&ndash;&gt;-->
-<!--&lt;!&ndash;          <span class="slider-value">{{ current }}</span>&ndash;&gt;-->
-
-<!--        </div>-->
-
-        <!-- Start/Stop buttons centered below the slider -->
+        <!-- Start/Stop buttons -->
         <div class="button-container">
           <v-btn
             @click="startcalculateVoltage"
@@ -46,7 +35,9 @@
           </v-btn>
         </div>
       </div>
-
+      <v-subheader class="neuron1-subheader" v-if="$title() === 'Healthy'">
+          Neuron 1
+      </v-subheader>
       <div class="graph-comm" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
         <div
           class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
@@ -56,6 +47,29 @@
         <div
           id="rightECG"
           ref="rightECG"
+          class="w-full"
+          :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
+        ></div>
+        <div
+          id="ecgDescription"
+          class="text-caption text-xl-body-2"
+          :class="mdAndUp ? 'graph-text-md' : 'graph-text-sm'"
+        >
+<!--          {{ $ecg().description }}-->
+        </div>
+      </div>
+      <v-subheader class="neuron2-subheader" v-if="$title() === 'Healthy'">
+        Neuron 2
+      </v-subheader>
+      <div class="graph-comm2" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+        <div
+          class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
+        >
+<!--          Electrocardiogram (ECG)-->
+        </div>
+        <div
+          id="leftECG"
+          ref="leftECG"
           class="w-full"
           :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
         ></div>
@@ -83,6 +97,7 @@
         totalDuration:300,
 
         url:null,
+        url2:null,
         test:1,
         current: 0,
         voltage: null,
@@ -103,17 +118,9 @@
     },
 
     mounted() {
-
-
-      // Set initial value of voltage to null
-      this.voltage = null;
+      // Initialise the voltage and time arrays
       this.voltages = [];
-      this.time = null;
       this.times = [];
-
-      // Ensure visibility is set to true when the component is mounted
-      this.isVoltageVisible = true;
-      this.isTimeVisible = true;
 
       if (process.client) {
         window.ecgDone = false; //to prevent unexpected problem of chart being loaded twice
@@ -165,57 +172,74 @@
     },
 
     stopcalculateVoltage() {
-      // Clear the interval when it's no longer needed
+      // Clear the interval when it is no longer needed
       clearInterval(this.intervalId);
     },
 
     async calculateVoltage() {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
-        const data = await response.json();
-        this.reset = false;
-        // console.log(data)
-        if(this.url !== null){
-          URL.revokeObjectURL(this.url)
+        if (this.$title() === "Home")
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/single/${this.current}`);
+            const data = await response.json();
+            this.reset = false;
+            // console.log(data)
+            if(this.url !== null){
+              URL.revokeObjectURL(this.url)
+            }
+
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            this.url = URL.createObjectURL(blob);
+
+            ecgName = null;
+            window.ecgDone = false;
+            const rightECG = this.$refs.rightECG;
+            rightECG.innerHTML = '';
+            loadChart({name:"testEcg"+String(this.test), path:this.url}, "success", 1.0);
+            this.test+=1;
+        } catch (error) {
+          console.error("Error updating voltage:", error);
+        } else if (this.$title() === "Healthy")
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/synapse/${this.current}`);
+            const data = await response.json();
+            const data1 = data["data1"]
+            const data2 = data["data2"]
+            this.reset = false;
+            // console.log(data)
+            if(this.url !== null){
+              URL.revokeObjectURL(this.url)
+            }
+
+            const blob = new Blob([JSON.stringify(data1)], { type: 'application/json' });
+            this.url = URL.createObjectURL(blob);
+
+            ecgName = null;
+            window.ecgDone = false;
+            const rightECG = this.$refs.rightECG;
+            rightECG.innerHTML = '';
+            loadChart({name:"testEcg"+String(this.test), path:this.url}, "success", 1.0);
+            this.test+=1;
+
+            if(this.url2 !== null){
+              URL.revokeObjectURL(this.url2)
+            }
+
+            const blob2 = new Blob([JSON.stringify(data2)], { type: 'application/json' });
+            this.url2 = URL.createObjectURL(blob2);
+
+            window.ecgDone2 = false;
+            const rightECG2 = this.$refs.leftECG;
+            rightECG2.innerHTML = '';
+            loadChart2({name:"testEcg2"+String(this.test), path:this.url2}, "success", 1.0);
+            this.test+=1;
+
+        } catch (error) {
+            console.error("Error updating voltage:", error);
         }
-
-        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-        this.url = URL.createObjectURL(blob);
-
-        ecgName = null;
-        window.ecgDone = false;
-        const rightECG = this.$refs.rightECG;
-        rightECG.innerHTML = '';
-        loadChart({name:"testEcg"+String(this.test), path:this.url}, "success", 1.0);
-        this.test+=1;
-        // Update the voltages array
-        // this.voltages = data.voltage;
-        // this.times = data.times;
-        // console.log(data)
-        // // Update the voltage property to the first element of the array
-        // if (this.voltages.length > 0) {
-        //   this.voltage = this.voltages[this.voltages.length - 1];
-        //   this.isVoltageVisible = true;
-        // } else {
-        //   console.warn("Received an empty voltages array");
-        // }
-        // // Update the time property to the first element of the array
-        // if (this.times.length > 0) {
-        //   this.time = this.times[this.times.length - 1];
-        //   this.isTimeVisible = true;
-        // } else {
-        //   console.warn("Received an empty voltages array");
-        // }
-        // this.saveVoltageData({ voltages: this.voltages, times: this.times });
-
-      } catch (error) {
-        console.error("Error updating voltage:", error);
-      }
-
     },
     },
     beforeDestroy() {
-    // Wirte code before destory this component
+    // Write code before destroying this component
     this.stopcalculateVoltage();
   }
   };
@@ -248,7 +272,7 @@
   }
   .rightECG-md {
     width: 25vw;
-    min-height: 350px;
+    min-height: 300px;
   }
   .graph-text-md {
     display: flex;
@@ -268,8 +292,18 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 60px;
+    margin-top: 40px;
     margin-right: 60px;
+    margin-bottom: 40px !important;
+  }
+  .graph-comm2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px !important;
+    margin-right: 60px;
+    margin-bottom: 10px;
   }
   .EGC-lg {
     height: 20vh;
@@ -287,14 +321,38 @@
 
   .top-center-container {
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    //margin-top: 20px;
+    //margin-bottom: 20px;
     margin-right: 50px;
-    margin-left: 50px
+    margin-left: 50px;
   }
 
   .custom-subheader {
+    font-weight: bold;
+    text-decoration: underline;
     margin-bottom: 30px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    width: 100%;
+  }
+  .neuron1-subheader {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    width: 100%;
+  }
+
+  .neuron2-subheader {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-top: 10px !important;
+    margin-bottom: 10px;
     color: white;
     display: flex;
     justify-content: center;
@@ -309,20 +367,21 @@
   }
 
   .slider-value {
-    margin-top: 5px; /* Move the slider value down a bit */
+    margin-top: 5px;
     font-size: 18px;
   }
 
   .button-container {
     display: flex;
-    justify-content: space-around; /* Adjusted to space around for the buttons */
+    justify-content: space-around;
     align-items: center;
     margin-top: 10px;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
   }
 
   .start-button,
   .stop-button {
     margin-top: 10px;
+    margin-bottom: 40px;
   }
   </style>

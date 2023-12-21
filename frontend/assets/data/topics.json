@@ -1,7 +1,7 @@
 {
   "model": {
     "title": "Template",
-    "heading": "Te Manawa",
+    "heading": "Single Neuron Model",
     "icon": "mdi-home",
     "subTopics": {
       "heart": {
@@ -21,13 +21,13 @@
     }
   },
   "attack": {
-    "title": "Attack",
-    "heading": "Heart Attack",
+    "title": "Synapse",
+    "heading": "Two Neuron Model",
     "icon": "mdi-heart-broken",
     "subTopics": {
       "healthy": {
         "title": "Healthy",
-        "heading": "Coronary Arteries",
+        "heading": "Heading",
         "icon": "mdi-heart-pulse",
         "dataFile": "attack-healthy",
         "category": "success",

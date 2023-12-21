@@ -1,4 +1,6 @@
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia ex iste tempora quidem doloribus, rem quis at quae unde, veritatis aliquam eum! Blanditiis, tempore? Accusamus est tenetur non sit eligendi!</p>
+<p>This model displays two neuron connected together. When an action potential occurs in the first neuron, a change in membrane potential occurs in the second neuron. 
+
+Adjust the current input into the first neuron with the slider on the right panel to observe the effect on the membrane potential of both neurons.</p>
 
 <div class="topic-img-big">
 

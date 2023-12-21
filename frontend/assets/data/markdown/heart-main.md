@@ -1,5 +1,4 @@
-dsasadssda Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maxime explicabo eveniet illum officia vero ab omnis iste, officiis similique voluptate voluptates accusantium nulla blanditiis commodi dignissimos deleniti aliquid culpa vitae.
-
+<p> Adjust the input current to the neuron with the slider on the right panel to observe the effect on the neuron's membrane potential.</p>
 <div class="topic-img-big">
 <img src="" alt="img/schematic1.png" width="90%" height="auto"/>
 

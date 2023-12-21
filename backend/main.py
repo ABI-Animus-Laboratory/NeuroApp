@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse, StreamingResponse, Response, JSONRes
 from one_neuron import simulation
 import json
 from fastapi import HTTPException
+from two_neuron import two_neuron_volt
 
 
 app = FastAPI()
@@ -17,33 +18,37 @@ app.add_middleware(
 )
 
 
-def save_voltage_data(json_data):
-    file_path = "/Users/chrisneville-dowler/NeuroApp/frontend/static/ECG/NormalECG.json"
-
-    try:
-        with open(file_path, "w") as file:
-            json.dump(json_data, file, indent=2)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving data: {str(e)}")
-
+# def save_voltage_data(json_data):
+#     file_path = "/Users/chrisneville-dowler/NeuroApp/frontend/static/ECG/NormalECG.json"
+#
+#     try:
+#         with open(file_path, "w") as file:
+#             json.dump(json_data, file, indent=2)
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error saving data: {str(e)}")
+#
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/hello/{current}")
+@app.get("/single/{current}")
 async def get_voltage(current: int):
-
     [voltage, times] = simulation(current)
-
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(voltage, times)]
-    # Save voltage data to JSON file
-    # save_voltage_data(voltage_data)
-
-    # return {"voltage": voltage, "times": times}
     return voltage_data
+
+
+@app.get("/synapse/{current}")
+async def get_voltage(current: int):
+    [v1, v2, times] = two_neuron_volt(current)
+    # Create a list of dictionaries with "y" and "x" keys
+    data1 = [{"y": v, "x": t} for v, t in zip(v1, times)]
+    data2 = [{"y": v, "x": t} for v, t in zip(v2, times)]
+    data = {"data1": data1, "data2": data2}
+    return data
 
 
 

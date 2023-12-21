@@ -19,7 +19,6 @@ export default {
       modelName: "Model load on here!",
       helloworld:"",
       model:null,
-
     };
   },
 
@@ -80,45 +79,6 @@ export default {
   },
 
   methods: {
-    // async updateVoltage() {
-    //   try {
-    //     const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
-    //     const data = await response.json();
-    //
-    //     // Update the voltages array
-    //     this.voltages = data;
-    //
-    //     // Update the voltage property to the first element of the array
-    //     if (this.voltages.length > 0) {
-    //       this.voltage = this.voltages[this.voltages.length - 1];
-    //       this.isVoltageVisible = true;
-    //     } else {
-    //       console.warn("Received an empty voltages array");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error updating voltage:", error);
-    //   }
-    // },
-    // saveVoltageData(data) {
-    //   // Map the voltage and time arrays to an array of objects with "y" and "x" keys
-    //   const jsonData = data.voltages.map((y, index) => ({
-    //     y,
-    //     x: data.times[index],
-    //   }));
-    //
-    //   // Convert the array to a JSON-formatted string
-    //   const jsonString = JSON.stringify(jsonData, null, 2);
-    //
-    //   // Specify the file path and name
-    //   const filePath = '/Users/chrisneville-dowler/NeuroApp/frontend/static/ECG/NormalECG.json';
-    //
-    //   // Write the JSON data to the file
-    //   fs.writeFileSync(filePath, jsonString, 'utf-8');
-    // },
-
-
-
-
     async start(){
       console.log("load model functions.");
       // get model from backend
@@ -156,7 +116,6 @@ export default {
 
   beforeDestroy() {
     // Wirte code before destory this component
-    // this.stopcalculateVoltage();
   }
 };
 </script>
@@ -169,7 +128,5 @@ export default {
   justify-content: flex-start;
   height: 100vh;
 }
-
-
 </style>
 
