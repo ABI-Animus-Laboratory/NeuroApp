@@ -1,6 +1,5 @@
 <p> Adjust the input current to the neuron with the slider on the right panel to observe the effect on the neuron's membrane potential.</p>
 
-The membrane potential is displayed using two separate neuron models: Leaky integrate-and-fire and Hodgkin-Huxley neuron models.
 <div class="topic-img-big">
 <img src="" alt="img/schematic1.png" width="90%" height="auto"/>
 

@@ -48,9 +48,9 @@ async def get_voltage(current: int):
     return voltage_data
 
 
-@app.get("/single/{current}/{mempotential}")
-async def get_voltage(current: int, mempotential: int):
-    [v, times] = simulationHH(current, mempotential)
+@app.get("/single/{current}/{mempotential}/{g_K}")
+async def get_voltage(current: int, mempotential: int, g_K: int):
+    [v, times] = simulationHH(current, mempotential, g_K)
     if len(times) >= 499:
         v_new = v[-499:]
         times_new = times[-499:]

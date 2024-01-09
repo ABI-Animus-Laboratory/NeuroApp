@@ -1,12 +1,12 @@
 {
   "model": {
-    "title": "Template",
-    "heading": "Single Neuron Models",
+    "title": "Leaky IAF",
+    "heading": "Leaky integrate-and-fire",
     "icon": "mdi-home",
     "subTopics": {
       "heart": {
-        "title": "Home",
-        "heading": "Heading",
+        "title": "Leaky IAF",
+        "heading": "Single neuron model",
         "icon": "mdi-home-heart",
         "dataFile": "heart-main",
         "category": "success",
@@ -27,7 +27,7 @@
     "subTopics": {
       "healthy": {
         "title": "Healthy",
-        "heading": "Heading",
+        "heading": "Leaky integrate-and-fire model",
         "icon": "mdi-heart-pulse",
         "dataFile": "attack-healthy",
         "category": "success",
@@ -58,12 +58,12 @@
   },
   "electricity": {
     "title": "Hodgkin-Huxley",
-    "heading": "Heart Electricity",
+    "heading": "Hodgkin-Huxley",
     "icon": "mdi-lightning-bolt",
     "subTopics": {
       "healthy": {
         "title": "Hodgkin-Huxley",
-        "heading": "Electrocardiograms",
+        "heading": "Single neuron model",
         "icon": "mdi-battery-heart",
         "dataFile": "electricity-healthy",
         "category": "success",

@@ -13,7 +13,7 @@
         </v-subheader>
         <!-- Slider to control current -->
         <v-slider
-              v-if="$title() === 'Home'"
+              v-if="$title() === 'Leaky IAF'"
               v-model="currentA"
               max="500"
               min="0"
@@ -32,7 +32,29 @@
               v-if="$title() === 'Hodgkin-Huxley'"
               v-model="currentC"
               max="500"
+              min="1"
+              thumb-color="blue"
+              thumb-label="always"
+        ></v-slider>
+        <v-subheader v-if="$title() === 'Hodgkin-Huxley'" class="custom-subheader">
+          Capacity of the membrane
+        </v-subheader>
+        <v-slider
+              v-if="$title() === 'Hodgkin-Huxley'"
+              v-model="mempotential"
+              max="500"
               min="0"
+              thumb-color="blue"
+              thumb-label="always"
+        ></v-slider>
+        <v-subheader v-if="$title() === 'Hodgkin-Huxley'" class="custom-subheader">
+          Potassium Peak Conductance
+        </v-subheader>
+        <v-slider
+              v-if="$title() === 'Hodgkin-Huxley'"
+              v-model="g_K"
+              max="8000"
+              min="4000"
               thumb-color="blue"
               thumb-label="always"
         ></v-slider>
@@ -75,7 +97,7 @@
 <!--          {{ $ecg().description }}-->
         </div>
       </div>
-      <div v-if="$title() === 'Home'" class="graph-comm3" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+      <div v-if="$title() === 'Leaky IAF'" class="graph-comm3" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
         <div
           class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
         >
@@ -162,6 +184,7 @@
         currentB: 0,
         currentC: 0,
         mempotential: 200.0,
+        g_K: 6000.0,
         voltage: null,
         voltages: [],
         intervalId: null,
@@ -240,7 +263,7 @@
     // },
 
     async calculateVoltage() {
-        if (this.$title() === "Home")
+        if (this.$title() === "Leaky IAF")
           try {
             const response = await fetch(`http://127.0.0.1:8000/single/${this.currentA}`);
             const dataA = await response.json();
@@ -317,7 +340,7 @@
 
         } else if (this.$title() === "Hodgkin-Huxley")
           try {
-            const response = await fetch(`http://127.0.0.1:8000/single/${this.currentC}/${this.mempotential}`);
+            const response = await fetch(`http://127.0.0.1:8000/single/${this.currentC}/${this.mempotential}/${this.g_K}`);
             const data4 = await response.json();
             this.reset = false;
             // console.log(data)

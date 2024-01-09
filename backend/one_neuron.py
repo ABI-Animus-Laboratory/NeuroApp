@@ -59,10 +59,11 @@ def two_neuron_volt(current):
     return Vms1, Vms2, ts2
 
 
-def simulationHH(current, mempotential):
+def simulationHH(current, mempotential, g_K):
     # Input parameters
     neuron3.I_e = current
     neuron3.C_m = mempotential
+    neuron3.g_K = g_K
     # NEST simulation
     nest.Simulate(dtfl)
     mms3 = multimeter3.get('events')
