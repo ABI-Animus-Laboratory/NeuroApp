@@ -50,23 +50,16 @@ async def get_voltage(current: int):
 
 @app.get("/single/{current}/{mempotential}")
 async def get_voltage(current: int, mempotential: int):
-    [v1, times1] = simulation(current)
-    [v2, times2] = simulationHH(current, mempotential)
-    if len(times1) >= 499:
-        voltage_new1 = v1[-499:]
-        voltage_new2 = v2[-499:]
-        times_new1 = times1[-499:]
-        times_new2 = times2[-499:]
+    [v, times] = simulationHH(current, mempotential)
+    if len(times) >= 499:
+        v_new = v[-499:]
+        times_new = times[-499:]
     else:
-        voltage_new1 = v1
-        voltage_new2 = v2
-        times_new1 = times1
-        times_new2 = times2
+        v_new = v
+        times_new = times
     # Create a list of dictionaries with "y" and "x" keys
-    voltage_data1 = [{"y": v, "x": t} for v, t in zip(voltage_new1, times_new1)]
-    voltage_data2 = [{"y": v1, "x": t1} for v1, t1 in zip(voltage_new2, times_new2)]
-    data = {"data1": voltage_data1, "data2": voltage_data2}
-    return data
+    voltage_data = [{"y": v, "x": t} for v, t in zip(v_new, times_new)]
+    return voltage_data
 
 
 @app.get("/synapse/{current}")

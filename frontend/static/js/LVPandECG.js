@@ -28,6 +28,15 @@ var minECGTime3 = 0.0;
 var currentECGName3 = "None";
 var timeLineOffset3 = 0.0;
 
+var ECGchart4 = undefined;
+var ECGurls4 = [];
+var ECGs4 = [];
+var ecgIndicator4 = undefined;
+var maxECGTime4 = 0.0;
+var minECGTime4 = 0.0;
+var currentECGName4 = "None";
+var timeLineOffset4 = 0.0;
+
 require(["dijit/Dialog"]);
 
 function loadChart(ecg, category, timeOffset) {
@@ -267,6 +276,91 @@ function loadChart3(ecg3, category, timeOffset) {
           }
 
           showECGChart3(ecg3.name, ecg3.path, category);
+
+        });
+      });
+    });
+  });
+}
+
+function loadChart4(ecg4, category, timeOffset) {
+  require(["dojo/ready"], function (ready) {
+    ready(function () {
+      require([
+        "dojo/_base/declare",
+        "dojo/dom-construct",
+        "dojox/charting/Chart",
+        "dojox/charting/plot2d/StackedLines",
+        "dojox/charting/plot2d/Grid",
+        "dojox/charting/themes/Claro",
+        "dojox/charting/axis2d/Default",
+        "dojox/charting/plot2d/Indicator",
+        "dojox/charting/themes/Tom",
+      ], function (declare, domConstruct, Chart, StackedLines, Grid, Claro, axis2dDefault, plot2dIndicator, tomTheme) {
+        ready(function () {
+          //   var ECGchart;
+          tomTheme.chart.fill = "transparent";
+          tomTheme.plotarea.fill = "transparent";
+          tomTheme.chart.stroke = "transparent";
+          var ecgDom = document.getElementById("bECG");
+
+          ECGchart4 = new Chart(ecgDom); //html element (dom) the chart will be drawn
+          ECGchart4.setTheme(tomTheme);
+
+          /* add the x-axis */
+          ECGchart4.addAxis("x", {
+            // type: "Invisible",
+            title: "Time (s)",
+            titleOrientation: "away",
+            titleFontColor: "#fff",
+            fontColor: "#fff",
+            majorLabels: true,
+            minorTicks: true,
+            minorLabels: true,
+            microTicks: true,
+            // min: 0,
+            // max: 500,
+          });
+          /* add the y-axis */
+          ECGchart4.addAxis("y", {
+            // type: "Invisible",
+            vertical: true,
+            title: "Membrane Potential (mV)",
+            titleFontColor: "#fff",
+            majorLabels: true,
+            minorTicks: true,
+            minorLabels: true,
+            microTicks: true,
+            min: -90,
+            max: 0,
+            font: "normal normal normal 10pt Helvetica",
+            fontColor: "#fff",
+            labels: [
+              { value: -90, text: "-90 mV" },
+              { value: -80, text: "-80 mV" },
+              { value: -60, text: "-60 mV" },
+              { value: -50, text: "-50 mV" },
+              { value: -40, text: "-40 mV" },
+              { value: -30, text: "-30 mV" },
+              { value: -20, text: "-20 mV" },
+              { value: -10, text: "-10 mV" },
+              { value: 0, text: "0 mV" },
+            ],
+
+            // Set tick positions on the y-axis
+            majorTicks: [
+              -75, -70, -65, -60, -55, -50
+            ],
+            // stroke: [0, 0, 0, 0],
+          });
+
+          timeLineOffset = timeOffset;
+
+          if (!ECGurls4[ecg4.name]) {
+            ECGurls4[ecg4.name] = ecg4.path;
+          }
+
+          showECGChart4(ecg4.name, ecg4.path, category);
 
         });
       });
@@ -529,4 +623,64 @@ var showECGInternal3 = function (category, axisName) {
 
 function updatePlot3() {
   ECGchart3.render();
+}
+
+// plot 4 functions
+
+function showECGChart4(axisName, ecgPath, category) {
+  ecgName = axisName;
+  if (ECGs4[axisName]) {
+    showECGInternal4(category, axisName);
+  } else {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = onECGLoaded4(xmlhttp, category, axisName);
+    xmlhttp.open("GET", ecgPath, true);
+    xmlhttp.send();
+  }
+}
+
+
+function onECGLoaded4(xmlhttp, category, axisName) {
+  return function () {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      var viewData = JSON.parse(xmlhttp.responseText);
+      var newViewData = rescaleXAxis(viewData);
+      ECGs4[axisName] = newViewData;
+      if (category) {
+        showECGInternal4(category, axisName);
+      }
+    }
+  };
+}
+
+var showECGInternal4 = function (category, axisName) {
+  var currentECG = ECGs4[axisName];
+  maxECGTime4 = currentECG[currentECG.length - 1]["x"];
+  minECGTime4 = currentECG[0]["x"];
+  ECGchart4.removeSeries(currentECGName4);
+  currentECGName4 = axisName;
+  var colourName = "rgba(50,205,50,0.6)";
+  var widthvar = 2;
+
+  if (category == "warning") {
+    colourName = "rgba(255,255,0,1)";
+    widthvar = 3;
+  } else if (category == "error") {
+    colourName = "rgba(255,50,0,1)";
+    widthvar = 3;
+  }
+
+  if (window.ecgDone4 != true) {
+    ECGchart4.addSeries(axisName, currentECG, {
+      stroke: { color: colourName, width: widthvar },
+    });
+
+    ECGchart4.render();
+    ECGchart4.resize("100%", "100%");
+  }
+  ecgDone = true;
+};
+
+function updatePlot4() {
+  ECGchart4.render();
 }

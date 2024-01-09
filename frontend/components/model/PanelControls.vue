@@ -28,6 +28,14 @@
               thumb-color="blue"
               thumb-label="always"
         ></v-slider>
+        <v-slider
+              v-if="$title() === 'Hodgkin-Huxley'"
+              v-model="currentC"
+              max="500"
+              min="0"
+              thumb-color="blue"
+              thumb-label="always"
+        ></v-slider>
         <!-- Start/Stop buttons -->
 <!--        <div class="button-container">-->
 <!--          <v-btn-->
@@ -87,6 +95,26 @@
 <!--          {{ $ecg().description }}-->
         </div>
       </div>
+            <div v-if="$title() === 'Hodgkin-Huxley'" class="graph-comm4" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+        <div
+          class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
+        >
+<!--          Electrocardiogram (ECG)-->
+        </div>
+        <div
+          id="bECG"
+          ref="bECG"
+          class="w-full"
+          :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
+        ></div>
+        <div
+          id="ecgDescription"
+          class="text-caption text-xl-body-2"
+          :class="mdAndUp ? 'graph-text-md' : 'graph-text-sm'"
+        >
+<!--          {{ $ecg().description }}-->
+        </div>
+      </div>
       <v-subheader class="neuron2-subheader" v-if="$title() === 'Healthy'">
         Neuron 2
       </v-subheader>
@@ -128,9 +156,11 @@
         url1:null,
         url2:null,
         url3:null,
+        url4:null,
         test:1,
         currentA: 0,
         currentB: 0,
+        currentC: 0,
         mempotential: 200.0,
         voltage: null,
         voltages: [],
@@ -285,28 +315,28 @@
         } catch (error) {
             console.error("Error updating voltage:", error);
 
-        // } else if (this.$title() === "Hodgkin-Huxley")
-        //   try {
-        //     const response = await fetch(`http://127.0.0.1:8000/single/${this.current}/${this.mempotential}`);
-        //     const data4 = await response.json();
-        //     this.reset = false;
-        //     // console.log(data)
-        //     if(this.url !== null){
-        //       URL.revokeObjectURL(this.url)
-        //     }
-        //
-        //     const blob = new Blob([JSON.stringify(data4)], { type: 'application/json' });
-        //     this.url = URL.createObjectURL(blob);
-        //
-        //     ecgName = null;
-        //     window.ecgDone = false;
-        //     const rightECG = this.$refs.rightECG;
-        //     rightECG.innerHTML = '';
-        //     loadChart({name:"testEcg"+String(this.test), path:this.url}, "success", 1.0);
-        //     this.test+=1;
-        //
-        // } catch (error) {
-        //     console.error("Error updating voltage:", error);
+        } else if (this.$title() === "Hodgkin-Huxley")
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/single/${this.currentC}/${this.mempotential}`);
+            const data4 = await response.json();
+            this.reset = false;
+            // console.log(data)
+            if(this.url4 !== null){
+              URL.revokeObjectURL(this.url4)
+            }
+
+            const blob4 = new Blob([JSON.stringify(data4)], { type: 'application/json' });
+            this.url4 = URL.createObjectURL(blob4);
+
+            ecgName = null;
+            window.ecgDone = false;
+            const bECG = this.$refs.bECG;
+            bECG.innerHTML = '';
+            loadChart4({name:"testEcg4"+String(this.test), path:this.url4}, "success", 1.0);
+            this.test+=1;
+
+        } catch (error) {
+            console.error("Error updating voltage:", error);
         }
     },
     },
@@ -378,6 +408,15 @@
     margin-bottom: 10px;
   }
   .graph-comm3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 40px;
+    margin-right: 60px;
+    margin-bottom: 40px !important;
+  }
+  .graph-comm4 {
     display: flex;
     justify-content: center;
     align-items: center;
