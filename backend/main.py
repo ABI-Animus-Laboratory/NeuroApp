@@ -4,7 +4,8 @@ from fastapi.responses import FileResponse, StreamingResponse, Response, JSONRes
 from one_neuron import simulation
 import json
 from fastapi import HTTPException
-from two_neuron import two_neuron_volt
+from one_neuron import two_neuron_volt
+from one_neuron import simulationHH
 
 
 app = FastAPI()
@@ -36,17 +37,52 @@ async def root():
 @app.get("/single/{current}")
 async def get_voltage(current: int):
     [voltage, times] = simulation(current)
+    if len(times) >= 499:
+        voltage_new = voltage[-499:]
+        times_new = times[-499:]
+    else:
+        voltage_new = voltage
+        times_new = times
     # Create a list of dictionaries with "y" and "x" keys
-    voltage_data = [{"y": v, "x": t} for v, t in zip(voltage, times)]
+    voltage_data = [{"y": v, "x": t} for v, t in zip(voltage_new, times_new)]
     return voltage_data
+
+
+@app.get("/single/{current}/{mempotential}")
+async def get_voltage(current: int, mempotential: int):
+    [v1, times1] = simulation(current)
+    [v2, times2] = simulationHH(current, mempotential)
+    if len(times1) >= 499:
+        voltage_new1 = v1[-499:]
+        voltage_new2 = v2[-499:]
+        times_new1 = times1[-499:]
+        times_new2 = times2[-499:]
+    else:
+        voltage_new1 = v1
+        voltage_new2 = v2
+        times_new1 = times1
+        times_new2 = times2
+    # Create a list of dictionaries with "y" and "x" keys
+    voltage_data1 = [{"y": v, "x": t} for v, t in zip(voltage_new1, times_new1)]
+    voltage_data2 = [{"y": v1, "x": t1} for v1, t1 in zip(voltage_new2, times_new2)]
+    data = {"data1": voltage_data1, "data2": voltage_data2}
+    return data
 
 
 @app.get("/synapse/{current}")
 async def get_voltage(current: int):
     [v1, v2, times] = two_neuron_volt(current)
+    if len(times) >= 499:
+        v1_new = v1[-499:]
+        v2_new = v2[-499:]
+        times_new = times[-499:]
+    else:
+        voltage_new1 = v1
+        voltage_new2 = v2
+        times_new = times
     # Create a list of dictionaries with "y" and "x" keys
-    data1 = [{"y": v, "x": t} for v, t in zip(v1, times)]
-    data2 = [{"y": v, "x": t} for v, t in zip(v2, times)]
+    data1 = [{"y": v1, "x": t} for v1, t in zip(v1_new, times_new)]
+    data2 = [{"y": v2, "x": t} for v2, t in zip(v2_new, times_new)]
     data = {"data1": data1, "data2": data2}
     return data
 

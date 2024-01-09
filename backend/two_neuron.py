@@ -1,6 +1,7 @@
 import nest
 import numpy as np
 
+# nest.ResetKernel()
 
 def getMemPot(Vdevice):
     # helper function to get the voltage array
@@ -10,10 +11,9 @@ def getMemPot(Vdevice):
 
 def two_neuron_volt(current):
     nest.set_verbosity("M_WARNING")
-    nest.ResetKernel()
     # initialise simulation
-    dt = 500
-    dtf = float(dt)
+    dt2 = 500
+    dtfl2 = float(dt2)
     # Ims = np.empty(0)
     weight = 20.0
     delay = 1.0
@@ -27,10 +27,10 @@ def two_neuron_volt(current):
     # Input parameters
     neuron1.I_e = current
     # NEST simulation
-    nest.Simulate(dtf)
+    nest.Simulate(dtfl2)
     Vms1 = list(getMemPot(multimeter1))
     Vms2 = list(getMemPot(multimeter2))
     mms = multimeter1.get('events')
-    ts = list(mms['times'])
+    ts2 = list(mms['times'])
     # Ims = np.append(Ims, [I_input] * (len(ts) - len(Ims)))
-    return Vms1, Vms2, ts
+    return Vms1, Vms2, ts2

@@ -1,7 +1,7 @@
 {
   "model": {
     "title": "Template",
-    "heading": "Single Neuron Model",
+    "heading": "Single Neuron Models",
     "icon": "mdi-home",
     "subTopics": {
       "heart": {
@@ -57,12 +57,12 @@
     }
   },
   "electricity": {
-    "title": "Electricity",
+    "title": "Hodgkin-Huxley",
     "heading": "Heart Electricity",
     "icon": "mdi-lightning-bolt",
     "subTopics": {
       "healthy": {
-        "title": "Healthy",
+        "title": "Hodgkin-Huxley",
         "heading": "Electrocardiograms",
         "icon": "mdi-battery-heart",
         "dataFile": "electricity-healthy",
