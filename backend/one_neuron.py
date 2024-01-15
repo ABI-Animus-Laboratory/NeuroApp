@@ -3,6 +3,7 @@ import numpy as np
 
 nest.set_verbosity("M_WARNING")
 nest.ResetKernel()
+nest.set(min_delay=0.5, max_delay=1.0)
 
 # parameters
 dt = 50
@@ -24,18 +25,18 @@ multimeter4 = nest.Create("multimeter", params={"record_from": ["V_m"]})
 
 # initialise connections
 nest.Connect(multimeter, neuron)
-nest.Connect(neuron1, neuron2, syn_spec={"weight": weight, "delay": delay})
+nest.Connect(neuron1, neuron2, syn_spec={"synapse_model": "stdp_synapse", "weight": weight, "delay": delay})
 nest.Connect(multimeter1, neuron1)
 nest.Connect(multimeter2, neuron2)
 nest.Connect(multimeter3, neuron3)
 nest.Connect(multimeter4, neuron4)
-
+nest.Prepare()
 
 def simulation(Iin):
     # Input parameters
     neuron.I_e = Iin
     # NEST simulation
-    nest.Simulate(dtfl)
+    nest.Run(dtfl)
     mms = multimeter.get('events')
     Vms = list(mms['V_m'])
     ts = list(mms['times'])
@@ -47,7 +48,7 @@ def placeholder(Iin):
     # Input parameters
     neuron.I_e = Iin
     # NEST simulation
-    nest.Simulate(dtfl)
+    nest.Run(dtfl)
     mms = multimeter.get('events')
     Vms = list(mms['V_m'])
     ts = list(mms['times'])
@@ -65,7 +66,7 @@ def two_neuron_volt(current):
     # Input parameters
     neuron1.I_e = current
     # NEST simulation
-    nest.Simulate(dtfl)
+    nest.Run(dtfl)
     Vms1 = list(getMemPot(multimeter1))
     Vms2 = list(getMemPot(multimeter2))
     mms2 = multimeter1.get('events')
@@ -80,9 +81,13 @@ def simulationHH(current, mempotential, g_K):
     neuron3.C_m = mempotential
     neuron3.g_K = g_K
     # NEST simulation
-    nest.Simulate(dtfl)
+    nest.Run(dtfl)
     mms3 = multimeter3.get('events')
     Vms3 = list(mms3['V_m'])
     ts3 = list(mms3['times'])
     # Ims = [Iin] * len(ts)
     return Vms3, ts3
+
+
+def cleanup():
+    nest.Cleanup()

@@ -7,6 +7,7 @@ from fastapi import HTTPException
 from one_neuron import two_neuron_volt
 from one_neuron import simulationHH
 from one_neuron import placeholder
+from one_neuron import cleanup
 
 app = FastAPI()
 
@@ -33,6 +34,10 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
+@app.get("/single/cleanup")
+async def get_voltage(current: int):
+    cleanup()
+
 
 @app.get("/single/{current}")
 async def get_voltage(current: int):
@@ -44,6 +49,9 @@ async def get_voltage(current: int):
     else:
         voltage_new = voltage
         times_new = times
+    #times_new = []
+    #for i in range(1, 500):
+    #    times_new.append(i)
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(voltage_new, times_new)]
     return voltage_data
@@ -55,10 +63,13 @@ async def get_voltage(current: int):
     [voltage, times] = placeholder(current)
     if len(times) >= 499:
         voltage_new = voltage[-499:]
-        times_new = times[-499:]
+        # times_new = times[-499:]
     else:
         voltage_new = voltage
-        times_new = times
+        # times_new = times
+    times_new = []
+    for i in range(1, 500):
+        times_new.append(i)
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(voltage_new, times_new)]
     return voltage_data
@@ -69,10 +80,13 @@ async def get_voltage(current: int, mempotential: int, g_K: int):
     [v, times] = simulationHH(current, mempotential, g_K)
     if len(times) >= 499:
         v_new = v[-499:]
-        times_new = times[-499:]
+        # times_new = times[-499:]
     else:
         v_new = v
-        times_new = times
+        # times_new = times
+    times_new = []
+    for i in range(1, 500):
+        times_new.append(i)
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(v_new, times_new)]
     return voltage_data
@@ -84,11 +98,14 @@ async def get_voltage(current: int):
     if len(times) >= 499:
         v1_new = v1[-499:]
         v2_new = v2[-499:]
-        times_new = times[-499:]
+        # times_new = times[-499:]
     else:
         voltage_new1 = v1
         voltage_new2 = v2
-        times_new = times
+        # times_new = times
+    times_new = []
+    for i in range(1, 500):
+        times_new.append(i)
     # Create a list of dictionaries with "y" and "x" keys
     data1 = [{"y": v1, "x": t} for v1, t in zip(v1_new, times_new)]
     data2 = [{"y": v2, "x": t} for v2, t in zip(v2_new, times_new)]

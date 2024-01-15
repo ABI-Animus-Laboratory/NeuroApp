@@ -236,7 +236,7 @@
         times: [],
         time: null,
         reset: false,
-        updateInterval: 2000 // Set the update interval in milliseconds
+        updateInterval: 50 // Set the update interval in milliseconds
       };
     },
     computed: {
@@ -509,6 +509,31 @@
     beforeDestroy() {
     // Write code before destroying this component
     this.stopcalculateVoltage();
+
+        // Call the backend function without requiring any response
+    fetch('http://127.0.0.1:8000/single/cleanup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Optionally, include a request body if needed
+      // body: JSON.stringify({ key: 'value' }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        // Optional: Handle success if needed
+        // You can omit the next line if you don't need to do anything on success
+        return response.json();
+      })
+      .then(data => {
+        // Optional: Handle the response data if needed
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error calling backend function:', error);
+      });
     //   if(!!this.intervalId){
     //     clearInterval(this.intervalId)
     //   }
