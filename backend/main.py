@@ -6,7 +6,7 @@ import json
 from fastapi import HTTPException
 from one_neuron import two_neuron_volt
 from one_neuron import simulationHH
-
+from one_neuron import placeholder
 
 app = FastAPI()
 
@@ -36,7 +36,23 @@ async def root():
 
 @app.get("/single/{current}")
 async def get_voltage(current: int):
+    print(current)
     [voltage, times] = simulation(current)
+    if len(times) >= 499:
+        voltage_new = voltage[-499:]
+        times_new = times[-499:]
+    else:
+        voltage_new = voltage
+        times_new = times
+    # Create a list of dictionaries with "y" and "x" keys
+    voltage_data = [{"y": v, "x": t} for v, t in zip(voltage_new, times_new)]
+    return voltage_data
+
+
+@app.get("/fourth/{current}")
+async def get_voltage(current: int):
+    print(current)
+    [voltage, times] = placeholder(current)
     if len(times) >= 499:
         voltage_new = voltage[-499:]
         times_new = times[-499:]
@@ -78,7 +94,6 @@ async def get_voltage(current: int):
     data2 = [{"y": v2, "x": t} for v2, t in zip(v2_new, times_new)]
     data = {"data1": data1, "data2": data2}
     return data
-
 
 
 @app.get("/api/model")

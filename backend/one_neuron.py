@@ -15,10 +15,12 @@ neuron = nest.Create("iaf_psc_alpha")
 neuron1 = nest.Create("iaf_psc_alpha")
 neuron2 = nest.Create("iaf_psc_alpha")
 neuron3 = nest.Create("hh_cond_beta_gap_traub")
+neuron4 = nest.Create("iaf_psc_alpha")
 multimeter = nest.Create("multimeter", params={"record_from": ["V_m"]})
 multimeter1 = nest.Create("multimeter", params={"record_from": ["V_m"]})
 multimeter2 = nest.Create("multimeter", params={"record_from": ["V_m"]})
 multimeter3 = nest.Create("multimeter", params={"record_from": ["V_m"]})
+multimeter4 = nest.Create("multimeter", params={"record_from": ["V_m"]})
 
 # initialise connections
 nest.Connect(multimeter, neuron)
@@ -26,9 +28,22 @@ nest.Connect(neuron1, neuron2, syn_spec={"weight": weight, "delay": delay})
 nest.Connect(multimeter1, neuron1)
 nest.Connect(multimeter2, neuron2)
 nest.Connect(multimeter3, neuron3)
+nest.Connect(multimeter4, neuron4)
 
 
 def simulation(Iin):
+    # Input parameters
+    neuron.I_e = Iin
+    # NEST simulation
+    nest.Simulate(dtfl)
+    mms = multimeter.get('events')
+    Vms = list(mms['V_m'])
+    ts = list(mms['times'])
+    # Ims = [Iin] * len(ts)
+    return Vms, ts
+
+
+def placeholder(Iin):
     # Input parameters
     neuron.I_e = Iin
     # NEST simulation

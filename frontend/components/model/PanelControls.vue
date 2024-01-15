@@ -32,7 +32,15 @@
               v-if="$title() === 'Hodgkin-Huxley'"
               v-model="currentC"
               max="500"
-              min="1"
+              min="0"
+              thumb-color="blue"
+              thumb-label="always"
+        ></v-slider>
+        <v-slider
+              v-if="$title() === 'fourth'"
+              v-model="currentD"
+              max="500"
+              min="0"
               thumb-color="blue"
               thumb-label="always"
         ></v-slider>
@@ -43,7 +51,7 @@
               v-if="$title() === 'Hodgkin-Huxley'"
               v-model="mempotential"
               max="500"
-              min="0"
+              min="1"
               thumb-color="blue"
               thumb-label="always"
         ></v-slider>
@@ -88,7 +96,8 @@
           ref="rightECG"
           class="w-full"
           :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
-        ></div>
+        >
+        </div>
         <div
           id="ecgDescription"
           class="text-caption text-xl-body-2"
@@ -109,6 +118,13 @@
           class="w-full"
           :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
         ></div>
+<!--        <div-->
+<!--          id="rightECG"-->
+<!--          ref="rightECG"-->
+<!--          class="w-full"-->
+<!--          :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"-->
+<!--        >-->
+<!--        </div>-->
         <div
           id="ecgDescription"
           class="text-caption text-xl-body-2"
@@ -117,7 +133,7 @@
 <!--          {{ $ecg().description }}-->
         </div>
       </div>
-            <div v-if="$title() === 'Hodgkin-Huxley'" class="graph-comm4" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+      <div v-if="$title() === 'Hodgkin-Huxley'" class="graph-comm4" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
         <div
           class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
         >
@@ -128,6 +144,26 @@
           ref="bECG"
           class="w-full"
           :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
+        ></div>
+        <div
+          id="ecgDescription"
+          class="text-caption text-xl-body-2"
+          :class="mdAndUp ? 'graph-text-md' : 'graph-text-sm'"
+          >
+<!--          {{ $ecg().description }}-->
+        </div>
+        </div>
+        <div v-if="$title() === 'fourth'" class="graph-comm5" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+          <div
+            class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
+          >
+<!--          Electrocardiogram (ECG)-->
+          </div>
+          <div
+            id="cECG"
+            ref="cECG"
+            class="w-full"
+            :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
         ></div>
         <div
           id="ecgDescription"
@@ -179,15 +215,22 @@
         url2:null,
         url3:null,
         url4:null,
-        test:1,
+        url5:null,
+        test1:1,
+        test2:1,
+        test3:1,
+        test4:1,
         currentA: 0,
         currentB: 0,
         currentC: 0,
+        currentD: 0,
         mempotential: 200.0,
         g_K: 6000.0,
         voltage: null,
         voltages: [],
         intervalId: null,
+        intervalId2: null,
+        intervalId3: null,
         isVoltageVisible: false,
         isTimeVisible: false,
         times: [],
@@ -206,12 +249,66 @@
       // Initialise the voltage and time arrays
       this.voltages = [];
       this.times = [];
+      // this.currentA=0;
 
-      if (process.client) {
-        window.ecgDone = false; //to prevent unexpected problem of chart being loaded twice
-      }
+      // if (process.client) {
+      //   window.ecgDone = false; //to prevent unexpected problem of chart being loaded twice
+      // }
+  this.$nextTick(() => {
+    // Access and set the innerHTML for rightECG
+    const rightECG = this.$refs.rightECG;
+    if (rightECG) {
+      rightECG.innerHTML = '';
+    } else {
+      console.error('rightECG is undefined or null');
+    }
+
+    // Access and set the innerHTML for aECG
+    const aECG = this.$refs.aECG;
+    if (aECG) {
+      aECG.innerHTML = '';
+    } else {
+      console.error('aECG is undefined or null');
+    }
+
+    // Access and set the innerHTML for bECG
+    const bECG = this.$refs.bECG;
+    if (bECG) {
+      bECG.innerHTML = '';
+    } else {
+      console.error('bECG is undefined or null');
+    }
+
+    // Access and set the innerHTML for leftECG
+    const leftECG = this.$refs.leftECG;
+    if (leftECG) {
+      leftECG.innerHTML = '';
+    } else {
+      console.error('leftECG is undefined or null');
+    }
+
+    const cECG = this.$refs.leftECG;
+    if (cECG) {
+      cECG.innerHTML = '';
+    } else {
+      console.error('cECG is undefined or null');
+    }
+  });
+      // const rightECG = this.$refs.rightECG;
+      // rightECG.innerHTML = 'r';
+      //
+      // const aECG = this.$refs.aECG;
+      // aECG.innerHTML = 'a';
+      //
+      // const bECG = this.$refs.bECG;
+      // bECG.innerHTML = 'b';
+      //
+      // const leftECG = this.$refs.leftECG;
+      // leftECG.innerHTML = 'l';
 
       this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
+      // this.intervalId2 = setInterval(this.calculateVoltage, this.updateInterval);
+      // this.intervalId3 = setInterval(this.calculateVoltage, this.updateInterval);
       // // These ecgName and lvpName are global variables come from LVPandECG.js to prevent the name undefined issue.
       // ecgName = null;
       //
@@ -231,6 +328,7 @@
     },
     methods: {
       updateEcg() {
+
         this.baseRenderer = this.$baseRenderer();
         if (this.baseRenderer) {
           this.baseRenderer.preRenderCallbackFunctions.length = 0;
@@ -254,19 +352,37 @@
 
     //   startcalculateVoltage() {
     //   // Set up a recurring interval to call calculateVoltage with the updated current value
-    //   this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
+    //     if (this.$title() === "Leaky IAF") {
+    //       this.intervalId1 = setInterval(this.calculateVoltage, this.updateInterval);
+    //     } else if (this.$title() === "Healthy") {
+    //       this.intervalId2 = setInterval(this.calculateVoltage, this.updateInterval);
+    //     } else if (this.$title() === "Hodgkin-Huxley") {
+    //       this.intervalId2 = setInterval(this.calculateVoltage, this.updateInterval);
+    //     }
     // },
 
-    // stopcalculateVoltage() {
-    //   // Clear the interval when it is no longer needed
-    //   clearInterval(this.intervalId);
-    // },
+    stopcalculateVoltage() {
+      clearInterval(this.intervalId);
+      // clearInterval(this.intervalId2);
+      // clearInterval(this.intervalId3);
+      // Clear the interval when it is no longer needed
+      // if (this.$title() === "Leaky IAF") {
+      //   clearInterval(this.intervalId1);
+      // } else if (this.$title() === "Healthy") {
+      //   clearInterval(this.intervalId2);
+      // } else if (this.$title() === "Hodgkin-Huxley") {
+      //   clearInterval(this.intervalId3);
+      // }
+    },
 
     async calculateVoltage() {
         if (this.$title() === "Leaky IAF")
           try {
+            console.log("time", this.intervalId)
+            console.log("currentA",this.currentA)
             const response = await fetch(`http://127.0.0.1:8000/single/${this.currentA}`);
             const dataA = await response.json();
+            console.log("lEAKY, DATA", dataA)
             // const dataB = dataA["data1"]
             // const dataC = dataA["data2"]
             this.reset = false;
@@ -280,10 +396,15 @@
 
             ecgName = null;
             window.ecgDone = false;
-            const aECG = this.$refs.aECG;
+
+            // const aECG = this.$refs.aECG;
             aECG.innerHTML = '';
-            loadChart3({name:"testEcg3"+String(this.test), path:this.url3}, "success", 1.0);
-            this.test+=1;
+
+            // const rightECG = this.$refs.rightECG;
+            // rightECG.innerHTML = '';
+
+            console.log("test number", this.test1)
+            loadChart3({name:"testEcg3", path:this.url3}, "success", 1.0);
             //
             // if(this.url2 !== null){
             //   URL.revokeObjectURL(this.url2)
@@ -296,7 +417,7 @@
             // const rightECG2 = this.$refs.leftECG;
             // rightECG2.innerHTML = '';
             // loadChart2({name:"testEcg2"+String(this.test), path:this.url2}, "success", 1.0);
-            // this.test+=1;
+            // this.test1+=1;
 
         } catch (error) {
             console.error("Error updating voltage:", error);
@@ -317,10 +438,11 @@
 
             ecgName = null;
             window.ecgDone = false;
-            const rightECG = this.$refs.rightECG;
+            // const rightECG = this.$refs.rightECG;
             rightECG.innerHTML = '';
-            loadChart({name:"testEcg"+String(this.test), path:this.url1}, "success", 1.0);
-            this.test+=1;
+
+            loadChart({name:"testEcg", path:this.url1}, "success", 1.0);
+            // this.test+=1;
 
             if(this.url2 !== null){
               URL.revokeObjectURL(this.url2)
@@ -330,9 +452,9 @@
             this.url2 = URL.createObjectURL(blob2);
 
             window.ecgDone2 = false;
-            const leftECG2 = this.$refs.leftECG;
-            leftECG2.innerHTML = '';
-            loadChart2({name:"testEcg2"+String(this.test), path:this.url2}, "success", 1.0);
+            // const leftECG = this.$refs.leftECG;
+            leftECG.innerHTML = '';
+            loadChart2({name:"testEcg2", path:this.url2}, "success", 1.0);
             this.test+=1;
 
         } catch (error) {
@@ -353,20 +475,44 @@
 
             ecgName = null;
             window.ecgDone = false;
-            const bECG = this.$refs.bECG;
+            // const bECG = this.$refs.bECG;
             bECG.innerHTML = '';
-            loadChart4({name:"testEcg4"+String(this.test), path:this.url4}, "success", 1.0);
+            loadChart4({name:"testEcg4", path:this.url4}, "success", 1.0);
             this.test+=1;
 
+        } catch (error) {
+            console.error("Error updating voltage:", error);
+        } else if (this.$title() === "fourth")
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/fourth/${this.currentD}`);
+            const data5 = await response.json();
+            this.reset = false;
+            // console.log(data)
+            if(this.url5 !== null){
+              URL.revokeObjectURL(this.url5)
+            }
+
+            const blob5 = new Blob([JSON.stringify(data5)], { type: 'application/json' });
+            this.url5 = URL.createObjectURL(blob5);
+
+            ecgName = null;
+            window.ecgDone = false;
+            // const cECG = this.$refs.cECG;
+            cECG.innerHTML = '';
+            loadChart5({name:"testEcg5", path:this.url5}, "success", 1.0);
+            this.test+=1;
         } catch (error) {
             console.error("Error updating voltage:", error);
         }
     },
     },
-    // beforeDestroy() {
-    // // Write code before destroying this component
-    // this.stopcalculateVoltage();
-  // }
+    beforeDestroy() {
+    // Write code before destroying this component
+    this.stopcalculateVoltage();
+    //   if(!!this.intervalId){
+    //     clearInterval(this.intervalId)
+    //   }
+  }
   };
 
 
@@ -440,6 +586,15 @@
     margin-bottom: 40px !important;
   }
   .graph-comm4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 40px;
+    margin-right: 60px;
+    margin-bottom: 40px !important;
+  }
+  .graph-comm5 {
     display: flex;
     justify-content: center;
     align-items: center;

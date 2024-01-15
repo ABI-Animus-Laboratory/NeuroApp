@@ -83,12 +83,12 @@
     }
   },
   "failure": {
-    "title": "Failure",
+    "title": "Placeholder",
     "heading": "Heart Failure",
     "icon": "mdi-heart-off",
     "subTopics": {
       "healthy": {
-        "title": "Healthy",
+        "title": "fourth",
         "heading": "Chronic Problems",
         "icon": "mdi-account-heart",
         "dataFile": "failure-healthy",
