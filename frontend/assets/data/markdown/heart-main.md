@@ -4,23 +4,33 @@ The leaky integrate and fire model approximates a neuron as a leaky resistor and
 
 This interactive simulation represents the behaviour of a neuron in response to an input current using the leaky integrate-and-fire model. Specify the input current using the slider to the right and observe the dynamic membrane potential of the neuron on the graph. </p>
 
-<div class="topic-img-big">
-<img src="" alt="img/schematic1.png" width="90%" height="auto"/>
+[//]: # (<div class="topic-img-big">)
 
-</div>
+[//]: # (<img src="" alt="img/schematic1.png" width="90%" height="auto"/>)
 
----
-As for the video, we need add a `data-play="video"` attribute.
-<span class="md-video md-mt" data-play="video">
-    <img id="healthy" src="" alt="image" class="video-icon"/>
-</span>
-
-<div class="text-container">
-
-<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit cupiditate rerum omnis iure saepe corrupti explicabo, fuga, quas eum aliquam quod dolorum neque placeat cum consequuntur porro laboriosam, distinctio corporis.</p>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia ex iste tempora quidem doloribus, rem quis at quae unde, veritatis aliquam eum! Blanditiis, tempore? Accusamus est tenetur non sit eligendi!</p>
-</div>
+[//]: # ()
+[//]: # (</div>)
 
 ---
 
-<span class="md-notice"> Click through the tabs below to learn about various heart diseases.</span>
+[//]: # (<img src="./img/leakyIAFEqn.png" width="80%" height="auto"/>)
+
+[//]: # (As for the video, we need add a `data-play="video"` attribute.)
+
+[//]: # ()
+[//]: # (<span class="md-video md-mt" data-play="video">)
+
+[//]: # ()
+[//]: # (    <img id="healthy" src="./img/leakyIAFEqn.png" alt="image" class="video-icon"/>)
+
+[//]: # ()
+[//]: # (</span>)
+
+[//]: # (<div class="text-container">)
+
+[//]: # ()
+[//]: # (</div>)
+
+---
+
+[//]: # (<span class="md-notice"> Click through the tabs below to learn about various heart diseases.</span>)

@@ -1,29 +1,32 @@
-<p>The nervous system is made up of billions of neurons. To send messages across the body, the electrical signals must be transferred between neurons. Communication between neurons occurs through synapses, which allow one neuron to transfer the electrical signals to another neuron. Synapses can be either chemical or electrical: 
+The models used to simulate neuron activity are designed to reflect the behaviour of a real neuron; however, they are not exactly the same. There are many different neuron models with varying levels of complexity and accuracy. Previously we have seen the leaky integrate-and-fire neuron model. 
 
-Chemical synapse: The electrical signal in the first neuron triggers the release of a chemical called a neurotransmitter which binds to the other neuron and initiates an electrical response. 
+Another neuron model we will look at is the Hodgkin-Huxley model. This model is more complex than the leaky integrate-and-fire model, incorporating additional components to account for the lipid bilayer of the cell, voltage-gated ion channels, leak channels, electrochemical gradients, and ion pumps. 
 
-Electrical synapse: The two neurons are connected by gap junctions which allow for the transfer of electrical current. This way, changes in the electrical potential of the pre-synaptic neuron results in changes in the electrical potential of the post-synaptic neuron. 
+Multiple variables within the Hodgkin-Huxley model can be adjusted to modify the behaviour of the neuron in response to an input current. Two such variables are the capacity of the membrane and the potassium peak conductance.
 
-This simulation uses two leaky integrate-and-fire model neurons connected together by a synapse. When an action potential occurs in the first neuron, a change in membrane potential occurs in the second neuron. 
+Use the sliders of the right to adjust the input current, capacity of the membrane, and potassium peak conductance. Observe the changing membrane potential of the neuron in response to the changing inputs.
 
-The model used for this synapse incorporates spike time dependent plasticity. Spike time dependent plasticity is where the strength of the connection between the neurons depends on the timing of output and input action potentials.
 
-Use the slider on the right to adjust the current input into the first neuron and observe the effect on the membrane potential of both neurons.</p>
+[//]: # (<div class="topic-img-big">)
 
-<div class="topic-img-big">
+[//]: # ()
+[//]: # (<img src="./img/leakyIAFEqn.png" width="80%" height="auto"/>)
 
-<img src="img/coronary_heart.png" width="80%" height="auto"/>
-<span class="md-video md-mt" data-play="video">
-  <img id="blocked" src="img/blockage.png" class="video-icon-tall"/>
-</span>
-</div>
+[//]: # (<span class="md-video md-mt" data-play="video">)
 
-<div style="margin-top: 1em; margin-bottom:1em">
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia ex iste tempora quidem doloribus, rem quis at quae unde, veritatis aliquam eum! Blanditiis, tempore? Accusamus est tenetur non sit eligendi!
-</div>
+[//]: # (  <img id="blocked" src="img/blockage.png" class="video-icon-tall"/>)
+
+[//]: # (</span>)
+
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (<div style="margin-top: 1em; margin-bottom:1em">)
+
+[//]: # (</div>)
 
 ---
 
-<span class="md-notice"> 
-Click through the tabs below to learn about various heart attacks.
-</span>
+[//]: # (<span class="md-notice"> )
+
+[//]: # (</span>)

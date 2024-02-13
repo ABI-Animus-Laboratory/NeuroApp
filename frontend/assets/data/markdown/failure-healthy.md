@@ -1,7 +1,14 @@
+This simulation displays a network of 9 connected neurons, each represented as spheres. The arrows represent the connections between neurons.
 
+Click on any of the 9 neurons to adjust the input current and membrane capacitance of that specific neuron.
+
+Click on any of the arrows to adjust the weight of the connection.
+
+Adjust the properties within the network and click 'Start' to run the simulation.
+
+The membrane potential of each neuron can be observed after the simulation by clicking on the corresponding sphere.
 
 ---
 
 <span class="md-notice"> 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione repudiandae dicta veniam perspiciatis asperiores accusantium magni sapiente, culpa nihil sint mollitia aspernatur nulla quam dolore. Iusto corporis in dolorem dolorum?
 </span>

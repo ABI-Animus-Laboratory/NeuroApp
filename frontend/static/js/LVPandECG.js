@@ -73,7 +73,7 @@ function loadChart(ecg, category, timeOffset) {
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
-          var ecgDom = document.getElementById("rightECG");
+          var ecgDom = document.getElementById("chartA");
 
           ECGchart = new Chart(ecgDom); //html element (dom) the chart will be drawn
           ECGchart.setTheme(tomTheme);
@@ -153,7 +153,7 @@ function loadChart2(ecg2, category, timeOffset) {
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
-          var ecgDom2 = document.getElementById("leftECG");
+          var ecgDom2 = document.getElementById("chartB");
 
           ECGchart2 = new Chart(ecgDom2); //html element (dom) the chart will be drawn
           ECGchart2.setTheme(tomTheme);
@@ -235,7 +235,7 @@ function loadChart3(ecg3, category, timeOffset) {
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
-          var ecgDom3 = document.getElementById("aECG");
+          var ecgDom3 = document.getElementById("chartC");
 
           ECGchart3 = new Chart(ecgDom3); //html element (dom) the chart will be drawn
           ECGchart3.setTheme(tomTheme);
@@ -284,13 +284,13 @@ function loadChart3(ecg3, category, timeOffset) {
             // stroke: [0, 0, 0, 0],
           });
           ecg3.name = ecg3.name + String(this.test3);
-          console.log(ecg3.name);
+          // console.log(ecg3.name);
           timeLineOffset = timeOffset;
 
           if (!ECGurls3[ecg3.name]) {
             ECGurls3[ecg3.name] = ecg3.path;
           }
-          console.log(this.test3)
+          // console.log(this.test3)
           showECGChart3(ecg3.name, ecg3.path, category);
           test3+=1;
 
@@ -319,7 +319,7 @@ function loadChart4(ecg4, category, timeOffset) {
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
-          var ecgDom4 = document.getElementById("bECG");
+          var ecgDom4 = document.getElementById("chartD");
 
           ECGchart4 = new Chart(ecgDom4); //html element (dom) the chart will be drawn
           ECGchart4.setTheme(tomTheme);
@@ -404,7 +404,7 @@ function loadChart5(ecg5, category, timeOffset) {
           tomTheme.chart.fill = "transparent";
           tomTheme.plotarea.fill = "transparent";
           tomTheme.chart.stroke = "transparent";
-          var ecgDom5 = document.getElementById("cECG");
+          var ecgDom5 = document.getElementById("chartE");
 
           ECGchart5 = new Chart(ecgDom5); //html element (dom) the chart will be drawn
           ECGchart5.setTheme(tomTheme);
@@ -433,8 +433,8 @@ function loadChart5(ecg5, category, timeOffset) {
             minorTicks: true,
             minorLabels: true,
             microTicks: true,
-            min: -90,
-            max: 0,
+            min: -75,
+            max: -50,
             font: "normal normal normal 10pt Helvetica",
             fontColor: "#fff",
             labels: [
@@ -486,7 +486,7 @@ function onECGLoaded(xmlhttp, category, axisName) {
   return function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
       var viewData = JSON.parse(xmlhttp.responseText);
-      console.log(viewData.length)
+      // console.log(viewData.length)
       var newViewData = rescaleXAxis(viewData);
       //   defaultEcgData = rescaleXAxis(defaultEcgData);
       ECGs[axisName] = newViewData;
