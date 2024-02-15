@@ -41,7 +41,7 @@ export default {
       minValue3: -60,
       maxValue3: 0,
       clicked: false,
-      slidersVisible: [true, false, false, false, false, false, false, false, false],
+      slidersVisible: [false, false, false, false, false, false, false, false, false],
       arrowSlidersVisible: [false, false, false, false, false, false, false, false, false, false, false, false],
       updateInterval: 1000, // Set the update interval in milliseconds
       neuron1: null,
@@ -256,33 +256,31 @@ export default {
             this.demoForRaycaster();
           // this.copperScene.loadViewUrl(viewURL);
           } else if (model_name === "Leaky IAF" || model_name === "Hodgkin-Huxley") {
-            // this.clearObjects()
-            // const cubeGroup = new this.THREE.Group()
-            let neuron; // Declare the variable in a scope where you need access
-
+            let neuron;
             const loadObjFile = (callback) => {
-                this.copperScene.loadOBJ('modelView/neurontutorial.obj', (content) => {
-                    this.copperScene.setModelPosition(content, { x: 0, y: 0, z: 0 });
+                this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
+                    this.copperScene.setModelPosition(content, { x: 0.1, y: 0, z: 0 });
+                    content.scale.z = -1;
                     console.log("hi obj: ", content);
-                    neuron = content; // Assign the loaded object to the variable
+                    neuron = content;
                     neuron.name = "neuron";
-                    callback(); // Invoke the callback after the object is loaded
+                    callback();
                 }, { color: "pink" });
             };
 
             // Use the loadObjFile function and provide a callback function
             loadObjFile(() => {
-                // This code will be executed after the object is loaded
+                // // This code will be executed after the object is loaded
                 console.log("Object loaded and positioned:", neuron);
                   if (model_name === "Leaky IAF") {
-                      const neuronMeshLeaky = neuron.children[0]
+                      const neuronMeshLeaky = neuron.children[0].children[0]
                       $nuxt.$on('graph-change-Leaky', (payload) => {
                         console.log('Received value from Nuxt leaky:', payload);
                         const [val1, val2] = payload;
                       this.updateObjectColor(neuronMeshLeaky, val1, this.minValue, this.maxValue);
                     });
                   } else if (model_name === "Hodgkin-Huxley") {
-                      const neuronMeshHH = neuron.children[0]
+                      const neuronMeshHH = neuron.children[0].children[0]
                       $nuxt.$on('graph-change-HH', (payload) => {
                         console.log('Received value from Nuxt HH:', payload);
                         const [val1, val2] = payload;
@@ -290,8 +288,6 @@ export default {
                       this.updateObjectColor(neuronMeshHH, val1, this.minValue3, this.maxValue3);
                     });
                   }
-                // You can perform additional actions here
-                // ...
             });
             // this.copperScene.loadOBJ('modelView/neurontutorial.obj', (content) => {
             //   this.copperScene.setModelPosition(content, { x: 0, y: 0, z: 0 });
@@ -311,16 +307,66 @@ export default {
             // this.copperScene.loadViewUrl(viewURL);
             // this.copperScene.onWindowResize();
           } else if (model_name === "Healthy") {
-            // this.clearObjects()
-            this.demoForRaycaster3();
-            $nuxt.$on('graph-change-synapse', (payload) => {
-              console.log('Received value from Nuxt synapse:', payload);
-              const [val1, val2] = payload;
-              const objectA = this.copperScene.scene.getObjectByName("objectA");
-              const objectB = this.copperScene.scene.getObjectByName("objectB");
-              this.updateObjectColor2(objectA, val1, this.minValue, this.maxValue);
-              this.updateObjectColor(objectB, val2, this.minValue2, this.maxValue2);
+            // this.demoForRaycaster3();
+            let neuron1;
+            let neuron2;
+            console.log("Entered healthy")
+            const loadObjFiles = (callback) => {
+                let loadedCount = 0;
+                console.log("Entered loadObjFiles")
+
+                const onObjLoad = () => {
+                    loadedCount++;
+                    console.log("Count: ", loadedCount)
+                    if (loadedCount === 2) {
+                        // Both objects have been loaded
+                        callback();
+                    }
+                };
+
+                this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
+                    this.copperScene.setModelPosition(content, { x: -0.8, y: 0, z: 0 });
+                    content.scale.set(0.5, 0.5, 0.5);
+                    content.scale.z = -1;
+                    console.log("hi obj: ", content);
+                    neuron1 = content;
+                    neuron1.name = "neuron1";
+                    onObjLoad();
+                }, { color: "pink" });
+
+                this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
+                    this.copperScene.setModelPosition(content, { x: 1, y: 0, z: 0 });
+                    content.scale.set(0.5, 0.5, 0.5);
+                    content.scale.z = -1;
+                    console.log("hi obj: ", content);
+                    neuron2 = content;
+                    neuron2.name = "neuron2";
+                    onObjLoad();
+                }, { color: "pink" });
+                console.log("neuron1: ",neuron1)
+                console.log("neuron2: ",neuron2)
+            };
+
+            // Example usage
+            loadObjFiles(() => {
+                    console.log("LoadObjFiles callback run")
+                    const neuronMesh1 = neuron1.children[0].children[0]
+                    const neuronMesh2 = neuron2.children[0].children[0]
+                    $nuxt.$on('graph-change-synapse', (payload) => {
+                      console.log('Received value from Nuxt HH:', payload);
+                      const [val1, val2] = payload;
+                      this.updateObjectColor(neuronMesh1, val1, this.minValue, this.maxValue);
+                      this.updateObjectColor(neuronMesh2, val2, this.minValue2, this.maxValue2);
+                      });
             });
+            // $nuxt.$on('graph-change-synapse', (payload) => {
+            //   console.log('Received value from Nuxt synapse:', payload);
+            //   const [val1, val2] = payload;
+            //   const objectA = this.copperScene.scene.getObjectByName("objectA");
+            //   const objectB = this.copperScene.scene.getObjectByName("objectB");
+            //   this.updateObjectColor2(objectA, val1, this.minValue, this.maxValue);
+            //   this.updateObjectColor(objectB, val2, this.minValue2, this.maxValue2);
+            // });
           }
         } else {
           this.baseRenderer.setCurrentScene(this.copperScene);
@@ -355,6 +401,10 @@ export default {
           this.arrows['arrow7'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube1").material.color.set('pink')
+          this.arrows['arrow1'].arrow.setColor('silver');
+          this.arrows['arrow1'].line.material.color.set('silver');
+          this.arrows['arrow7'].arrow.setColor('silver');
+          this.arrows['arrow7'].line.material.color.set('silver');
         }
         if (this.spikes[1]) {
           // this.copperScene.scene.getObjectByName("cube2").material.color.set('red')
@@ -364,6 +414,10 @@ export default {
           this.arrows['arrow9'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube2").material.color.set('pink')
+          this.arrows['arrow2'].arrow.setColor('silver');
+          this.arrows['arrow2'].line.material.color.set('silver');
+          this.arrows['arrow9'].arrow.setColor('silver');
+          this.arrows['arrow9'].line.material.color.set('silver');
         }
         if (this.spikes[2]) {
           // this.copperScene.scene.getObjectByName("cube3").material.color.set('red')
@@ -371,6 +425,8 @@ export default {
           this.arrows['arrow11'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube3").material.color.set('pink')
+          this.arrows['arrow11'].arrow.setColor('silver');
+          this.arrows['arrow11'].line.material.color.set('silver');
         }
         if (this.spikes[3]) {
           // this.copperScene.scene.getObjectByName("cube4").material.color.set('red')
@@ -380,6 +436,10 @@ export default {
           this.arrows['arrow8'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube4").material.color.set('pink')
+          this.arrows['arrow3'].arrow.setColor('silver');
+          this.arrows['arrow3'].line.material.color.set('silver');
+          this.arrows['arrow8'].arrow.setColor('silver');
+          this.arrows['arrow8'].line.material.color.set('silver');
         }
         if (this.spikes[4]) {
           // this.copperScene.scene.getObjectByName("cube5").material.color.set('red')
@@ -389,6 +449,10 @@ export default {
           this.arrows['arrow10'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube5").material.color.set('pink')
+          this.arrows['arrow4'].arrow.setColor('silver');
+          this.arrows['arrow4'].line.material.color.set('silver');
+          this.arrows['arrow10'].arrow.setColor('silver');
+          this.arrows['arrow10'].line.material.color.set('silver');
         }
         if (this.spikes[5]) {
           // this.copperScene.scene.getObjectByName("cube6").material.color.set('red')
@@ -396,6 +460,8 @@ export default {
           this.arrows['arrow12'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube6").material.color.set('pink')
+          this.arrows['arrow12'].arrow.setColor('silver');
+          this.arrows['arrow12'].line.material.color.set('silver');
         }
         if (this.spikes[6]) {
           // this.copperScene.scene.getObjectByName("cube7").material.color.set('red')
@@ -403,6 +469,8 @@ export default {
           this.arrows['arrow5'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube7").material.color.set('pink')
+          this.arrows['arrow5'].arrow.setColor('silver');
+          this.arrows['arrow5'].line.material.color.set('silver');
         }
         if (this.spikes[7]) {
           // this.copperScene.scene.getObjectByName("cube8").material.color.set('red')
@@ -410,6 +478,8 @@ export default {
           this.arrows['arrow6'].line.material.color.set('red');
         } else {
           // this.copperScene.scene.getObjectByName("cube8").material.color.set('pink')
+          this.arrows['arrow6'].arrow.setColor('silver');
+          this.arrows['arrow6'].line.material.color.set('silver');
         }
         if (this.spikes[8]) {
           // this.copperScene.scene.getObjectByName("cube9").material.color.set('red')
@@ -672,13 +742,14 @@ export default {
         }
       }
       console.log(this.slidersVisible)
+      console.log(this.arrowSlidersVisible)
       // this.runNetwork(this.currentStartValue);
       this.container.removeEventListener('click', this.onClick);
       $nuxt.$emit('update-panel', [this.slidersVisible, this.arrowSlidersVisible])
       // console.log(this.currentSelected.name)
     },
 
-    gradientColorMap(value) {
+    gradientColorMapNetwork(value) {
       // Interpolate between light red (hue: 0, saturation: 1, lightness: 0.8) and bright red (hue: 0, saturation: 1, lightness: 0.5)
       const hue = 0;
       const saturation = 1;
@@ -687,10 +758,35 @@ export default {
     },
 
     // Function to update the color of the object based on a value
-    updateObjectColor(object, value, minValue, maxValue) {
+    updateObjectColorNetwork(object, value, minValue, maxValue) {
       const normalizedValue = Math.min(Math.max((value - minValue) / (maxValue - minValue), 0), 1);
-      const color = this.gradientColorMap(normalizedValue);
+      const color = this.gradientColorMapNetwork(normalizedValue);
       object.material.color.copy(color);
+    },
+
+    gradientColorMap(value, minValue, maxValue) {
+        // Ensure that value is within the range [minValue, maxValue]
+        value = Math.min(Math.max(value, minValue), maxValue);
+
+        // If the value is equal to minValue, set it to the default color (1, 1, 1)
+        if (value === minValue) {
+            return new this.THREE.Color(1, 1, 1); // Use RGB representation (1, 1, 1)
+        }
+
+        // Interpolate between the default color (1, 1, 1) and red (#FF0000)
+        const defaultColor = new this.THREE.Color(1, 1, 1); // Use RGB representation (1, 1, 1)
+        const red = new this.THREE.Color('#FF0000');
+
+        const normalizedValue = (value - minValue) / (maxValue - minValue);
+        const interpolatedColor = new this.THREE.Color().lerpColors(defaultColor, red, normalizedValue);
+
+        return interpolatedColor;
+    },
+
+    // Function to update the color of the object based on a value
+    updateObjectColor(object, value, minValue, maxValue) {
+        const color = this.gradientColorMap(value, minValue, maxValue);
+        object.material.color.copy(color);
     },
 
     gradientColorMap2(value) {
@@ -708,55 +804,55 @@ export default {
       object.material.color.copy(color);
     },
 
-    createArrow(start, end, identifier, verticalPairs) {
+    createArrow(start, end, identifier, verticalPairs, sphereRadius) {
       const direction = new this.THREE.Vector3().copy(end.position).sub(start.position);
       direction.normalize();
       const arrowLength = 150;
 
       // Create an arrow helper
       const arrow = new this.THREE.ArrowHelper(
-        direction,           // Direction vector
-        start.position,      // Starting position
-        arrowLength,         // Length of the arrow
-        'silver'             // Arrow color
+        direction,
+        start.position,
+        arrowLength,
+        'silver'
       );
 
       // Adjust the scale of the arrowhead to make it wider
-      arrow.scale.set(5, 1, 1); // Adjust the x-axis scale to control arrowhead width
+      arrow.scale.set(5, 1, 1);
 
       // Create a cylinder to represent the line
       const lineGeometry = new this.THREE.CylinderGeometry(3, 3, arrowLength - 50, 8);
       const lineMaterial = new this.THREE.MeshBasicMaterial({ color: 'silver' });
       const line = new this.THREE.Mesh(lineGeometry, lineMaterial);
 
-      line.name = identifier
+      line.name = identifier;
 
-      // Calculate the distance between start and end
-      const distance = start.position.distanceTo(end.position);
+      // Calculate the position of the line at the midpoint between start and end
+      const linePosition = new this.THREE.Vector3().copy(start.position).add(end.position).multiplyScalar(0.5);
 
-      // Set the position of the line at the midpoint between start and end
-      line.position.copy(start.position).add(direction.multiplyScalar(distance / 2));
+      // Set the position of the line at the midpoint
+      line.position.copy(linePosition);
 
       // Calculate the rotation axis
       const axis = new this.THREE.Vector3(0, 0, 1);
-      // Calculate the rotation angle
-      let angle = Math.acos(direction.dot(axis));
 
       // Check if the pair should have a vertical cylinder
-
       if (verticalPairs.some(pair => (pair[0] === start && pair[1] === end) || (pair[1] === start && pair[0] === end))) {
-        angle += Math.PI / 2; // Add 90 degrees to make the cylinder vertical
+        // Calculate the rotation angle for the vertical cylinder
+        const angleVertical = Math.atan2(direction.y, direction.x);
+        line.rotation.set(0, 0, angleVertical + Math.PI / 2); // Make the cylinder vertical
+      } else {
+        // Calculate the rotation angle for the non-vertical cylinder
+        const angle = Math.acos(direction.dot(axis));
+        line.rotation.set(0, 0, angle);
       }
-
-      // Set the rotation of the line
-      line.rotation.set(0, 0, angle);
 
       // Add both the line and arrowhead to the scene
       this.copperScene.scene.add(line);
       this.copperScene.scene.add(arrow);
       this.arrows[identifier] = {
         arrow: arrow,
-        line: line
+        line: line,
       };
     },
 
@@ -881,7 +977,7 @@ export default {
                 this.currentSelected = mesh
 
                 // this.container.addEventListener('click', this.onClick);
-                console.dir(this.container)
+                console.log(mesh)
                 document.addEventListener('click', this.onClick);
                 console.log(mesh.name);
               } else {
@@ -906,15 +1002,15 @@ export default {
           this.neuron8 = this.copperScene.scene.getObjectByName("cube8");
           this.neuron9 = this.copperScene.scene.getObjectByName("cube9");
           console.log("neuron 1 ",this.neuron1)
-          this.updateObjectColor(this.neuron1, max0, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron2, max1, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron3, max2, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron4, max3, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron5, max4, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron6, max5, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron7, max6, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron8, max7, this.minValue, this.maxValue);
-          this.updateObjectColor(this.neuron9, max8, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron1, max0, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron2, max1, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron3, max2, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron4, max3, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron5, max4, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron6, max5, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron7, max6, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron8, max7, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.neuron9, max8, this.minValue, this.maxValue);
 
           this.runNetwork(networkSpikes)
         });

@@ -2,7 +2,7 @@
   "model": {
     "title": "Leaky IAF",
     "heading": "Leaky integrate-and-fire",
-    "icon": "mdi-home",
+    "icon": "mdi-circle-outline",
     "subTopics": {
       "heart": {
         "title": "Leaky IAF",
@@ -23,7 +23,7 @@
   "attack": {
     "title": "Hodgkin-Huxley",
     "heading": "Hodgkin-Huxley",
-    "icon": "mdi-heart-broken",
+    "icon": "mdi-circle",
     "subTopics": {
       "healthy": {
         "title": "Hodgkin-Huxley",
@@ -39,7 +39,7 @@
   "electricity": {
     "title": "Synapse",
     "heading": "Synapse",
-    "icon": "mdi-lightning-bolt",
+    "icon": "mdi-connection",
     "subTopics": {
       "healthy": {
         "title": "Healthy",
@@ -55,7 +55,7 @@
   "failure": {
     "title": "Network",
     "heading": "Neuron Network",
-    "icon": "mdi-heart-off",
+    "icon": "mdi-grid",
     "subTopics": {
       "healthy": {
         "title": "network",

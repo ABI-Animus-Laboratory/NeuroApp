@@ -10,9 +10,9 @@
       <div class="top-center-container">
       <div v-if="$title() === 'network'" class="button-container">
           <!-- Add the second button above the first button -->
-          <button @click="runNetwork">Start</button>
-          <button @click="resetColors">Clear</button>
-          <button @click="resetNetwork">Reset Values</button>
+          <button @click="runNetwork" style="background-color: #4CAF50; color: white;">Start</button>
+          <button @click="resetColors" style="background-color: #FF9800; color: white;">Clear</button>
+          <button @click="resetNetwork" style="background-color: #2196F3; color: white;">Reset Values</button>
       </div>
       <v-subheader v-if="$title() === 'Hodgkin-Huxley' || $title() === 'Healthy' || $title() === 'Leaky IAF'" class="custom-subheader">
         Input Current (pA)
@@ -42,19 +42,20 @@
               thumb-color="blue"
               thumb-label="always"
         ></v-slider>
-        <div v-for="(isVisible, index) in slidersVisible" :key="index" v-if="isVisible && $title() === 'network'">
-          <h3 style="margin-bottom: 40px;">Neuron {{ index + 1 }} Current</h3>
+        <div v-for="(isVisible, index) in slidersVisible" :key="'neuron-' + index" v-if="isVisible && $title() === 'network'">
+          <h3 style="margin-bottom: 50px; text-decoration: underline;">Neuron {{ index + 1 }} Current</h3>
           <v-slider
             v-model="currents[index]"
-            max="1000"
+            max="400"
             min="0"
             thumb-color="blue"
             thumb-label="always"
             style="width: 400px;"
           ></v-slider>
         </div>
-        <div v-for="(isVisible, index) in slidersVisible" :key="index" v-if="isVisible && $title() === 'network'">
-          <h3 style="margin-bottom: 40px;">Neuron {{ index + 1 }} Membrane Capacitance</h3>
+
+        <div v-for="(isVisible, index) in slidersVisible" :key="'memCap-' + index" v-if="isVisible && $title() === 'network'">
+          <h3 style="margin-bottom: 50px; text-decoration: underline;">Neuron {{ index + 1 }} Membrane Capacitance</h3>
           <v-slider
             v-model="memCap[index]"
             max="1000"
@@ -64,11 +65,12 @@
             style="width: 400px;"
           ></v-slider>
         </div>
-        <div v-for="(isArrowVisible, index) in arrowSlidersVisible" :key="index" v-if="isArrowVisible && $title() === 'network'">
-          <h3 style="margin-bottom: 40px;">Arrow {{ index + 1 }} Weight</h3>
+
+        <div v-for="(isArrowVisible, index) in arrowSlidersVisible" :key="'arrow-' + index" v-if="isArrowVisible && $title() === 'network'">
+          <h3 style="margin-bottom: 50px; text-decoration: underline;">Arrow {{ index + 1 }} Weight</h3>
           <v-slider
             v-model="weights[index]"
-            max="1000"
+            max="400"
             min="1"
             thumb-color="blue"
             thumb-label="always"
@@ -109,7 +111,7 @@
               thumb-label="always"
         ></v-slider>
         <div v-for="(isVisible, index) in slidersVisible" :key="index" v-if="isVisible && $title() === 'network'">
-          <h3 style="margin-bottom: 10px;">Neuron {{ index + 1 }} Membrane Potential</h3>
+          <h3 style="margin-bottom: 40px; text-decoration: underline;">Neuron {{ index + 1 }} Membrane Potential</h3>
         </div>
       </div>
       <v-subheader class="neuron1-subheader" v-if="$title() === 'Healthy'">
@@ -183,6 +185,26 @@
 <!--          {{ $ecg().description }}-->
         </div>
         </div>
+      <div v-if="$title() === 'network' && showNetworkGraph" class="graph-comm5" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
+        <div
+          class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
+        >
+<!--          Electrocardiogram (ECG)-->
+        </div>
+        <div
+          id="chartE"
+          ref="chartE"
+          class="w-full"
+          :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
+        ></div>
+        <div
+          id="ecgDescription"
+          class="text-caption text-xl-body-2"
+          :class="mdAndUp ? 'graph-text-md' : 'graph-text-sm'"
+          >
+<!--          {{ $ecg().description }}-->
+        </div>
+        </div>
 <!--        <div v-if="$title() === 'fourth'">-->
 <!--          <div class="button-container">-->
 <!--            <v-btn-->
@@ -213,26 +235,28 @@
 <!--              Stop-->
 <!--          </v-btn>-->
 <!--        </div>-->
-        <div v-if="$title() === 'network'" class="graph-comm5" :class="mdAndUp ? 'EGC-lg' : 'EGC-sm'">
-          <div
-            class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1"
-          >
-<!--          Electrocardiogram (ECG)-->
-          </div>
-          <div
-            id="chartE"
-            ref="chartE"
-            class="w-full"
-            :class="mdAndUp ? 'rightECG-md' : 'rightECG-sm'"
-        ></div>
-        <div
-          id="ecgDescription"
-          class="text-caption text-xl-body-2"
-          :class="mdAndUp ? 'graph-text-md' : 'graph-text-sm'"
-        >
-<!--          {{ $ecg().description }}-->
-        </div>
-      </div>
+<!--      <div-->
+<!--        class="graph-comm5"-->
+<!--        :class="{ 'EGC-lg': mdAndUp, 'EGC-sm': !mdAndUp }"-->
+<!--        :style="{ visibility: $title() === 'network' && showNetworkGraph ? 'visible' : 'hidden' }"-->
+<!--      >-->
+<!--        <div class="font-weight-bold text-subtitle-2 text-xl-h6 text-sm-subtitle-2 text-md-body-1">-->
+<!--          &lt;!&ndash; Electrocardiogram (ECG) &ndash;&gt;-->
+<!--        </div>-->
+<!--        <div-->
+<!--          id="chartE"-->
+<!--          ref="chartE"-->
+<!--          class="w-full"-->
+<!--          :class="{ 'rightECG-md': mdAndUp, 'rightECG-sm': !mdAndUp }"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--          id="ecgDescription"-->
+<!--          class="text-caption text-xl-body-2"-->
+<!--          :class="{ 'graph-text-md': mdAndUp, 'graph-text-sm': !mdAndUp }"-->
+<!--        >-->
+<!--          &lt;!&ndash; {{ $ecg().description }} &ndash;&gt;-->
+<!--        </div>-->
+<!--      </div>-->
       <v-subheader class="neuron2-subheader" v-if="$title() === 'Healthy'">
         Neuron 2
       </v-subheader>
@@ -327,8 +351,9 @@
         memCap: [200, 200, 200, 200, 200, 200, 200, 200, 200],
         weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
         connections: [true, true, true, true, true, true, true, true, true, true, true, true],
-        slidersVisible: [false, false, false, false, false, false, false, false, false],
+        slidersVisible: [true, false, false, false, false, false, false, false, false],
         arrowSlidersVisible: [false, false, false, false, false, false, false, false, false, false, false, false],
+        showNetworkGraph: true,
         net_volt_0: null,
         net_volt_1: null,
         net_volt_2: null,
@@ -442,9 +467,22 @@
       // const inputValue = val;
         this.slidersVisible = sliders[0];
         this.arrowSlidersVisible = sliders[1]
+        console.log("Sliders: ",this.slidersVisible)
+        console.log("Arrow Sliders: ",this.arrowSlidersVisible)
+        for (const value of this.slidersVisible) {
+          this.showNetworkGraph = false;
+          if (value) {
+            // Set the variable to true if at least one value is true
+            this.showNetworkGraph = true;
+            break; // Exit the loop early since we found a true value
+          }
+        }
+        this.calculateVoltage()
       });
 
-      this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
+      if (this.$title() === "Leaky IAF" || this.$title() === "Hodgkin-Huxley" || this.$title() === "Healthy") {
+        this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
+      }
 
       if (this.$title() === "network") {
         this.runNetwork()
@@ -617,7 +655,7 @@
         this.net_max8 = listA["max8"];
 
         $nuxt.$emit('run-network', [this.spikes, this.net_max0, this.net_max1, this.net_max2, this.net_max3, this.net_max4, this.net_max5, this.net_max6, this.net_max7,this.net_max8])
-
+        this.calculateVoltage()
         // this.reset = false;
         // // console.log(data)
         // if(this.url5 !== null){
@@ -678,6 +716,7 @@
           this.currents = [0, 0, 0, 0, 0, 0, 0, 0, 0]
           this.memCap = [200, 200, 200, 200, 200, 200, 200, 200, 200]
           this.weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+          this.runNetwork()
       },
 
       async calculateVoltage() {
@@ -937,7 +976,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 40px;
+    margin-top: 30px;
     margin-right: 60px;
     margin-bottom: 40px !important;
   }
@@ -946,7 +985,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 10px !important;
+    margin-top: 40px !important;
     margin-right: 60px;
     margin-bottom: 10px;
   }
@@ -1002,22 +1041,26 @@
   .custom-subheader {
     font-weight: bold;
     text-decoration: underline;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: white;
     display: flex;
     justify-content: center;
     font-size: 18px;
     width: 100%;
+    position: relative;
+    top: -20px;
   }
   .neuron1-subheader {
     font-weight: bold;
     text-decoration: underline;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     color: white;
     display: flex;
     justify-content: center;
     font-size: 18px;
     width: 100%;
+    position: relative;
+    top: -25px;
   }
 
   .neuron2-subheader {
