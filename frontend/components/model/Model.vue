@@ -123,6 +123,7 @@ export default {
       }, 500);
     });
 
+    // listen for when reset colours is called
     $nuxt.$on('reset-colors', () => {
       console.log('Received reset colors request');
       // const inputValue = val;
@@ -132,91 +133,16 @@ export default {
   },
 
   methods: {
-
-    // async updateVoltage() {
-    //   try {
-    //     const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
-    //     const data = await response.json();
-    //
-    //     // Update the voltages array
-    //     this.voltages = data;
-    //
-    //     // Update the voltage property to the first element of the array
-    //     if (this.voltages.length > 0) {
-    //       this.voltage = this.voltages[this.voltages.length - 1];
-    //       this.isVoltageVisible = true;
-    //     } else {
-    //       console.warn("Received an empty voltages array");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error updating voltage:", error);
-    //   }
-    // },
-
-    startcalculateVoltage() {
-      // Set up a recurring interval to call calculateVoltage with the updated current value
-      this.intervalId = setInterval(this.calculateVoltage, this.updateInterval);
-    },
-
-    stopcalculateVoltage() {
-      // Clear the interval when it's no longer needed
-      clearInterval(this.intervalId);
-    },
-
-    clearObjects() {
-      // Remove all children from the scene
-      while (this.copperScene.scene.children.length > 0) {
-        const child = this.copperScene.scene.children[0];
-
-        if (child instanceof this.THREE.Mesh) {
-          // Dispose of the geometry and material
-          child.geometry.dispose();
-          child.material.dispose();
-
-        }
-        this.copperScene.scene.remove(child);
-
-      }
-    },
-
-
-    async calculateVoltage() {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/hello/${this.current}`);
-        const data = await response.json();
-
-        // Update the voltages array
-        this.voltages = data.voltage;
-        this.times = data.times;
-
-        // Update the voltage property to the first element of the array
-        if (this.voltages.length > 0) {
-          this.voltage = this.voltages[this.voltages.length - 1];
-          this.isVoltageVisible = true;
-        } else {
-          console.warn("Received an empty voltages array");
-        }
-                // Update the voltage property to the first element of the array
-        if (this.times.length > 0) {
-          this.time = this.times[this.times.length - 1];
-          this.isTimeVisible = true;
-        } else {
-          console.warn("Received an empty voltages array");
-        }
-      } catch (error) {
-        console.error("Error updating voltage:", error);
-      }
-    },
-
     resetColors() {
-      const cubeNames = ["cube1", "cube2", "cube3", "cube4", "cube5", "cube6", "cube7", "cube8", "cube9"];
-
-      cubeNames.forEach((name) => {
-        const cube = this.copperScene.scene.getObjectByName(name);
-        if (cube) {
-          cube.material.color.set('pink');
+      // set the colour of all spheres to pink
+      const sphereNames = ["sphere1", "sphere2", "sphere3", "sphere4", "sphere5", "sphere6", "sphere7", "sphere8", "sphere9"];
+      sphereNames.forEach((name) => {
+        const sphere = this.copperScene.scene.getObjectByName(name);
+        if (sphere) {
+          sphere.material.color.set('pink');
         }
       });
+      // set the colour of all arrows to silver
       for (const identifier in this.arrows) {
         this.arrows[identifier].arrow.setColor('silver');
         this.arrows[identifier].line.material.color.set('silver');
@@ -225,8 +151,8 @@ export default {
 
 
     async start(){
-      console.log("model name ", this.modelName)
-      console.log("load model functions.");
+      // console.log("model name ", this.modelName)
+      // console.log("load model functions.");
       // get model from backend
       this.model = await fetch(
         'http://127.0.0.1:8000/api/model'
@@ -240,18 +166,13 @@ export default {
 
     loadModel(model_url, model_name) {
         const viewURL = 'modelView/noInfarct_view.json';
-        console.log("model name ", model_name)
+        // get the current scene based on the model name for the current tab
         this.copperScene = this.baseRenderer.getSceneByName(model_name);
+        // determine if that scene has already been created
         if (this.copperScene === undefined) {
+          // the scene has not been created so create it depending on the current tab
           this.copperScene = this.baseRenderer.createScene(model_name);
-          // this.copperScene.controls.staticMoving = true;
-          // this.copperScene.controls.rotateSpeed = 3.0;
-          // this.copperScene.controls.panSpeed = 3.0;
           this.baseRenderer.setCurrentScene(this.copperScene);
-          // this.copperScene.loadOBJ(model_url, (content) => {
-          //   // this.copperScene.setModelPosition(content, { x: 5, y: 2 });
-          //   console.log(content);
-          // });
           if (model_name === "network") {
             this.demoForRaycaster();
           // this.copperScene.loadViewUrl(viewURL);
@@ -274,40 +195,26 @@ export default {
                 console.log("Object loaded and positioned:", neuron);
                   if (model_name === "Leaky IAF") {
                       const neuronMeshLeaky = neuron.children[0].children[0]
+                      // listen for when graph has updated
                       $nuxt.$on('graph-change-Leaky', (payload) => {
                         console.log('Received value from Nuxt leaky:', payload);
                         const [val1, val2] = payload;
-                      this.updateObjectColor(neuronMeshLeaky, val1, this.minValue, this.maxValue);
+                        // update the colour of the model
+                        this.updateObjectColor(neuronMeshLeaky, val1, this.minValue, this.maxValue);
                     });
                   } else if (model_name === "Hodgkin-Huxley") {
                       const neuronMeshHH = neuron.children[0].children[0]
+                      // listen for when graph has updated
                       $nuxt.$on('graph-change-HH', (payload) => {
                         console.log('Received value from Nuxt HH:', payload);
                         const [val1, val2] = payload;
                         console.log(val1)
-                      this.updateObjectColor(neuronMeshHH, val1, this.minValue3, this.maxValue3);
+                        // update the colour of the model
+                        this.updateObjectColor(neuronMeshHH, val1, this.minValue3, this.maxValue3);
                     });
                   }
             });
-            // this.copperScene.loadOBJ('modelView/neurontutorial.obj', (content) => {
-            //   this.copperScene.setModelPosition(content, { x: 0, y: 0, z: 0 });
-            //   console.log("hi obj: ", content);
-            //   neuron = content; // Assign the loaded object to the variable
-            //   neuron.name = "neuron";
-            // }, { color: "pink" });
-            // const materialLibrary = this.copperScene.getMaterialLibrary(neuron.materialLibraries[0]);
-            // const material = materialLibrary.materials[0];
-            // material.color.set('red');
-            // const updateNeuron = this.copperScene.scene.getObjectByName("neuron")
-            // $nuxt.$on('graph-change', (payload) => {
-            //   console.log('Received value from Nuxt (leaky/hh):', payload);
-            //   const [val1, val2] = payload;
-            //   this.updateObjectColor(neuron, val1, this.minValue, this.maxValue);
-            // });
-            // this.copperScene.loadViewUrl(viewURL);
-            // this.copperScene.onWindowResize();
           } else if (model_name === "Healthy") {
-            // this.demoForRaycaster3();
             let neuron1;
             let neuron2;
             console.log("Entered healthy")
@@ -323,7 +230,7 @@ export default {
                         callback();
                     }
                 };
-
+                // load the 3D neuron model
                 this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
                     this.copperScene.setModelPosition(content, { x: -0.8, y: 0, z: 0 });
                     content.scale.set(0.5, 0.5, 0.5);
@@ -333,7 +240,7 @@ export default {
                     neuron1.name = "neuron1";
                     onObjLoad();
                 }, { color: "pink" });
-
+                // load the 3D neuron model
                 this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
                     this.copperScene.setModelPosition(content, { x: 1, y: 0, z: 0 });
                     content.scale.set(0.5, 0.5, 0.5);
@@ -359,16 +266,9 @@ export default {
                       this.updateObjectColor(neuronMesh2, val2, this.minValue2, this.maxValue2);
                       });
             });
-            // $nuxt.$on('graph-change-synapse', (payload) => {
-            //   console.log('Received value from Nuxt synapse:', payload);
-            //   const [val1, val2] = payload;
-            //   const objectA = this.copperScene.scene.getObjectByName("objectA");
-            //   const objectB = this.copperScene.scene.getObjectByName("objectB");
-            //   this.updateObjectColor2(objectA, val1, this.minValue, this.maxValue);
-            //   this.updateObjectColor(objectB, val2, this.minValue2, this.maxValue2);
-            // });
           }
         } else {
+          // scene has already been created set it as current scene
           this.baseRenderer.setCurrentScene(this.copperScene);
         }
         this.copperScene.loadViewUrl(viewURL);
@@ -376,140 +276,98 @@ export default {
     },
 
     async runNetwork(newspikes) {
+      // update the colour of the network connections based on the spikes array
       try {
-        console.log('runNetwork function called on Model Side')
-        // this.startNode = parameter
-        // let currents_string = variables[0].join(',');
-        // let memCap_string = variables[1].join(',');
-        // let weights_string = variables[2].join(',');
-        //
-        // const response = await fetch(`http://127.0.0.1:8000/network/${currents_string}/${memCap_string}/${weights_string}`);
-        // const listA = await response.json();
-        // this.spikes = listA
-        // console.log(listA)
         this.spikes = newspikes;
         console.log(this.spikes)
         console.log("Sliders visible ",this.slidersVisible)
         console.log("Arrows visible ",this.arrowSlidersVisible)
 
         if (this.spikes[0]) {
-          // this.copperScene.scene.getObjectByName("cube1").material.color.set('red')
-          console.log("cube1 made red")
           this.arrows['arrow1'].arrow.setColor('red');
           this.arrows['arrow1'].line.material.color.set('red');
           this.arrows['arrow7'].arrow.setColor('red');
           this.arrows['arrow7'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube1").material.color.set('pink')
           this.arrows['arrow1'].arrow.setColor('silver');
           this.arrows['arrow1'].line.material.color.set('silver');
           this.arrows['arrow7'].arrow.setColor('silver');
           this.arrows['arrow7'].line.material.color.set('silver');
         }
         if (this.spikes[1]) {
-          // this.copperScene.scene.getObjectByName("cube2").material.color.set('red')
           this.arrows['arrow2'].arrow.setColor('red');
           this.arrows['arrow2'].line.material.color.set('red');
           this.arrows['arrow9'].arrow.setColor('red');
           this.arrows['arrow9'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube2").material.color.set('pink')
           this.arrows['arrow2'].arrow.setColor('silver');
           this.arrows['arrow2'].line.material.color.set('silver');
           this.arrows['arrow9'].arrow.setColor('silver');
           this.arrows['arrow9'].line.material.color.set('silver');
         }
         if (this.spikes[2]) {
-          // this.copperScene.scene.getObjectByName("cube3").material.color.set('red')
           this.arrows['arrow11'].arrow.setColor('red');
           this.arrows['arrow11'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube3").material.color.set('pink')
           this.arrows['arrow11'].arrow.setColor('silver');
           this.arrows['arrow11'].line.material.color.set('silver');
         }
         if (this.spikes[3]) {
-          // this.copperScene.scene.getObjectByName("cube4").material.color.set('red')
           this.arrows['arrow3'].arrow.setColor('red');
           this.arrows['arrow3'].line.material.color.set('red');
           this.arrows['arrow8'].arrow.setColor('red');
           this.arrows['arrow8'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube4").material.color.set('pink')
           this.arrows['arrow3'].arrow.setColor('silver');
           this.arrows['arrow3'].line.material.color.set('silver');
           this.arrows['arrow8'].arrow.setColor('silver');
           this.arrows['arrow8'].line.material.color.set('silver');
         }
         if (this.spikes[4]) {
-          // this.copperScene.scene.getObjectByName("cube5").material.color.set('red')
           this.arrows['arrow4'].arrow.setColor('red');
           this.arrows['arrow4'].line.material.color.set('red');
           this.arrows['arrow10'].arrow.setColor('red');
           this.arrows['arrow10'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube5").material.color.set('pink')
           this.arrows['arrow4'].arrow.setColor('silver');
           this.arrows['arrow4'].line.material.color.set('silver');
           this.arrows['arrow10'].arrow.setColor('silver');
           this.arrows['arrow10'].line.material.color.set('silver');
         }
         if (this.spikes[5]) {
-          // this.copperScene.scene.getObjectByName("cube6").material.color.set('red')
           this.arrows['arrow12'].arrow.setColor('red');
           this.arrows['arrow12'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube6").material.color.set('pink')
           this.arrows['arrow12'].arrow.setColor('silver');
           this.arrows['arrow12'].line.material.color.set('silver');
         }
         if (this.spikes[6]) {
-          // this.copperScene.scene.getObjectByName("cube7").material.color.set('red')
           this.arrows['arrow5'].arrow.setColor('red');
           this.arrows['arrow5'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube7").material.color.set('pink')
           this.arrows['arrow5'].arrow.setColor('silver');
           this.arrows['arrow5'].line.material.color.set('silver');
         }
         if (this.spikes[7]) {
-          // this.copperScene.scene.getObjectByName("cube8").material.color.set('red')
           this.arrows['arrow6'].arrow.setColor('red');
           this.arrows['arrow6'].line.material.color.set('red');
         } else {
-          // this.copperScene.scene.getObjectByName("cube8").material.color.set('pink')
           this.arrows['arrow6'].arrow.setColor('silver');
           this.arrows['arrow6'].line.material.color.set('silver');
         }
         if (this.spikes[8]) {
-          // this.copperScene.scene.getObjectByName("cube9").material.color.set('red')
         } else {
-          // this.copperScene.scene.getObjectByName("cube9").material.color.set('pink')
         }
-
-        // // Update the color of the corresponding cube based on spikes information
-        // if (this.spikes && this.spikes.length === 9) {
-        //   for (let i = 0; i < this.spikes.length; i++) {
-        //     const cubeName = `cube${i + 1}`;
-        //     const cube = this.copperScene.scene.getObjectByName(cubeName);
-        //
-        //     if (cube) {
-        //       // Change color based on spikes value
-        //       const color = this.spikes[i] ? 'red' : 'pink';
-        //       cube.material.color.set(color);
-        //     }
-        //   }
-        // }
-
       } catch (error) {
         console.error("Error running network:", error);
       }
     },
 
     onClick() {
-      console.log("Clicked")
+      // console.log("Clicked")
+      // determine which sphere or connection has been clicked on and update the slidersVisible/arrowSlidersVisible array accordingly
       this.clicked = true;
-      if (this.currentSelected.name === "cube1") {
+      if (this.currentSelected.name === "sphere1") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 0) {
             this.$set(this.slidersVisible, i, true);
@@ -520,7 +378,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube2") {
+      } else if (this.currentSelected.name === "sphere2") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 1) {
             this.$set(this.slidersVisible, i, true);
@@ -531,7 +389,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube3") {
+      } else if (this.currentSelected.name === "sphere3") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 2) {
             this.$set(this.slidersVisible, i, true);
@@ -542,7 +400,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube4") {
+      } else if (this.currentSelected.name === "sphere4") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 3) {
             this.$set(this.slidersVisible, i, true);
@@ -553,7 +411,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube5") {
+      } else if (this.currentSelected.name === "sphere5") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 4) {
             this.$set(this.slidersVisible, i, true);
@@ -564,7 +422,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube6") {
+      } else if (this.currentSelected.name === "sphere6") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 5) {
             this.$set(this.slidersVisible, i, true);
@@ -575,7 +433,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube7") {
+      } else if (this.currentSelected.name === "sphere7") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 6) {
             this.$set(this.slidersVisible, i, true);
@@ -586,7 +444,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube8") {
+      } else if (this.currentSelected.name === "sphere8") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 7) {
             this.$set(this.slidersVisible, i, true);
@@ -597,7 +455,7 @@ export default {
         for (let i = 0; i < this.arrowSlidersVisible.length; i++) {
           this.$set(this.arrowSlidersVisible, i, false);
         }
-      } else if (this.currentSelected.name === "cube9") {
+      } else if (this.currentSelected.name === "sphere9") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 8) {
             this.$set(this.slidersVisible, i, true);
@@ -741,12 +599,8 @@ export default {
           this.$set(this.slidersVisible, i, false);
         }
       }
-      console.log(this.slidersVisible)
-      console.log(this.arrowSlidersVisible)
-      // this.runNetwork(this.currentStartValue);
       this.container.removeEventListener('click', this.onClick);
       $nuxt.$emit('update-panel', [this.slidersVisible, this.arrowSlidersVisible])
-      // console.log(this.currentSelected.name)
     },
 
     gradientColorMapNetwork(value) {
@@ -857,7 +711,7 @@ export default {
     },
 
     demoForRaycaster(){
-      console.log("demoForRaycaster called")
+      // initialise geometries
       const geometry1 = new this.THREE.SphereGeometry( 50, 50, 50 );
       const geometry2 = new this.THREE.SphereGeometry( 50, 50, 50 );
       const geometry3 = new this.THREE.SphereGeometry( 50, 50, 50 );
@@ -868,6 +722,7 @@ export default {
       const geometry8 = new this.THREE.SphereGeometry( 50, 50, 50 );
       const geometry9 = new this.THREE.SphereGeometry( 50, 50, 50 );
 
+      // initialise materials
       const material1 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
       const material2 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
       const material3 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
@@ -878,97 +733,87 @@ export default {
       const material8 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
       const material9 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
 
-      const cube1 = new this.THREE.Mesh( geometry1, material1 );
-      const cube2 = new this.THREE.Mesh( geometry2, material2 );
-      const cube3 = new this.THREE.Mesh( geometry3, material3 );
-      const cube4 = new this.THREE.Mesh( geometry4, material4 );
-      const cube5 = new this.THREE.Mesh( geometry5, material5 );
-      const cube6 = new this.THREE.Mesh( geometry6, material6 );
-      const cube7 = new this.THREE.Mesh( geometry7, material7 );
-      const cube8 = new this.THREE.Mesh( geometry8, material8 );
-      const cube9 = new this.THREE.Mesh( geometry9, material9 );
+      // create spheres
+      const sphere1 = new this.THREE.Mesh( geometry1, material1 );
+      const sphere2 = new this.THREE.Mesh( geometry2, material2 );
+      const sphere3 = new this.THREE.Mesh( geometry3, material3 );
+      const sphere4 = new this.THREE.Mesh( geometry4, material4 );
+      const sphere5 = new this.THREE.Mesh( geometry5, material5 );
+      const sphere6 = new this.THREE.Mesh( geometry6, material6 );
+      const sphere7 = new this.THREE.Mesh( geometry7, material7 );
+      const sphere8 = new this.THREE.Mesh( geometry8, material8 );
+      const sphere9 = new this.THREE.Mesh( geometry9, material9 );
 
-      cube1.name = "cube1";
-      cube2.name = "cube2";
-      cube3.name = "cube3";
-      cube4.name = "cube4";
-      cube5.name = "cube5";
-      cube6.name = "cube6";
-      cube7.name = "cube7";
-      cube8.name = "cube8";
-      cube9.name = "cube9";
+      // label spheres
+      sphere1.name = "sphere1";
+      sphere2.name = "sphere2";
+      sphere3.name = "sphere3";
+      sphere4.name = "sphere4";
+      sphere5.name = "sphere5";
+      sphere6.name = "sphere6";
+      sphere7.name = "sphere7";
+      sphere8.name = "sphere8";
+      sphere9.name = "sphere9";
 
-      // const geometryCyl = new this.THREE.CylinderGeometry( 5, 5, 20, 32 );
-      // const materialCyl = new this.THREE.MeshBasicMaterial( {color: 0xffff00} );
-      // const cylinder = new this.THREE.Mesh( geometryCyl, materialCyl );
-      // scene.add( cylinder );
+      // create sphere group
+      const sphereGroup = new this.THREE.Group()
+      sphere1.position.set(-200,-200,600)
+      sphere2.position.set(0,-200,600)
+      sphere3.position.set(200,-200,600)
+      sphere4.position.set(-200,0,600)
+      sphere5.position.set(0,0,600)
+      sphere6.position.set(200,0,600)
+      sphere7.position.set(-200,200,600)
+      sphere8.position.set(0,200,600)
+      sphere9.position.set(200,200,600)
+      sphereGroup.add(sphere1,sphere2,sphere3,sphere4,sphere5,sphere6,sphere7,sphere8,sphere9)
+      this.copperScene.scene.add( sphereGroup);
 
-      const cubeGroup = new this.THREE.Group()
-
-      cube1.position.set(-200,-200,600)
-      cube2.position.set(0,-200,600)
-      cube3.position.set(200,-200,600)
-      cube4.position.set(-200,0,600)
-      cube5.position.set(0,0,600)
-      cube6.position.set(200,0,600)
-      cube7.position.set(-200,200,600)
-      cube8.position.set(0,200,600)
-      cube9.position.set(200,200,600)
-
-      cubeGroup.add(cube1,cube2,cube3,cube4,cube5,cube6,cube7,cube8,cube9)
-      this.copperScene.scene.add( cubeGroup);
-      const cubes = [cube1, cube2, cube3, cube4, cube5, cube6, cube7, cube8, cube9];
+      // initialise arrays for creating sphere connections
+      const spheres = [sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8, sphere9];
       const arrowPairs = [
-        [cubes[0], cubes[1], "arrow1"],
-        [cubes[1], cubes[2], "arrow2"],
-        [cubes[3], cubes[4], "arrow3"],
-        [cubes[4], cubes[5], "arrow4"],
-        [cubes[6], cubes[7], "arrow5"],
-        [cubes[7], cubes[8], "arrow6"],
-        [cubes[0], cubes[3], "arrow7"],
-        [cubes[3], cubes[6], "arrow8"],
-        [cubes[1], cubes[4], "arrow9"],
-        [cubes[4], cubes[7], "arrow10"],
-        [cubes[2], cubes[5], "arrow11"],
-        [cubes[5], cubes[8], "arrow12"],
+        [spheres[0], spheres[1], "arrow1"],
+        [spheres[1], spheres[2], "arrow2"],
+        [spheres[3], spheres[4], "arrow3"],
+        [spheres[4], spheres[5], "arrow4"],
+        [spheres[6], spheres[7], "arrow5"],
+        [spheres[7], spheres[8], "arrow6"],
+        [spheres[0], spheres[3], "arrow7"],
+        [spheres[3], spheres[6], "arrow8"],
+        [spheres[1], spheres[4], "arrow9"],
+        [spheres[4], spheres[7], "arrow10"],
+        [spheres[2], spheres[5], "arrow11"],
+        [spheres[5], spheres[8], "arrow12"],
       ];
       const verticalPairs = [
-        [cube1, cube4],
-        [cube4, cube7],
-        [cube2, cube5],
-        [cube5, cube8],
-        [cube3, cube6],
-        [cube6, cube9],
+        [sphere1, sphere4],
+        [sphere4, sphere7],
+        [sphere2, sphere5],
+        [sphere5, sphere8],
+        [sphere3, sphere6],
+        [sphere6, sphere9],
       ];
       arrowPairs.forEach(pair => {
         this.createArrow(pair[0], pair[1], pair[2], verticalPairs);
       });
-      // const material = new this.THREE.LineBasicMaterial( { color: 0xffffff } );
-      // const points = [];
-      // points.push( new this.THREE.Vector3( - 200, -200, 0 ) );
-      // points.push( new this.THREE.Vector3( -200, 0, 0 ) );
-      //
-      // const geometry = new this.THREE.BufferGeometry().setFromPoints( points );
-      // const line = new this.THREE.Line( geometry, material );
-      // this.copperScene.scene.add( line );
+      // console.log("arrow 1: ", this.arrows["arrow1"].line)
+      // add the connections to the sphere group
+      sphereGroup.add(this.arrows["arrow1"].line)
+      sphereGroup.add(this.arrows["arrow2"].line)
+      sphereGroup.add(this.arrows["arrow3"].line)
+      sphereGroup.add(this.arrows["arrow4"].line)
+      sphereGroup.add(this.arrows["arrow5"].line)
+      sphereGroup.add(this.arrows["arrow6"].line)
+      sphereGroup.add(this.arrows["arrow7"].line)
+      sphereGroup.add(this.arrows["arrow8"].line)
+      sphereGroup.add(this.arrows["arrow9"].line)
+      sphereGroup.add(this.arrows["arrow10"].line)
+      sphereGroup.add(this.arrows["arrow11"].line)
+      sphereGroup.add(this.arrows["arrow12"].line)
 
-      // cubeGroup.add(this.arrows["arrow1"].arrow)
-      console.log("arrow 1: ", this.arrows["arrow1"].line)
-      cubeGroup.add(this.arrows["arrow1"].line)
-      cubeGroup.add(this.arrows["arrow2"].line)
-      cubeGroup.add(this.arrows["arrow3"].line)
-      cubeGroup.add(this.arrows["arrow4"].line)
-      cubeGroup.add(this.arrows["arrow5"].line)
-      cubeGroup.add(this.arrows["arrow6"].line)
-      cubeGroup.add(this.arrows["arrow7"].line)
-      cubeGroup.add(this.arrows["arrow8"].line)
-      cubeGroup.add(this.arrows["arrow9"].line)
-      cubeGroup.add(this.arrows["arrow10"].line)
-      cubeGroup.add(this.arrows["arrow11"].line)
-      cubeGroup.add(this.arrows["arrow12"].line)
-
+      // setup detection for clicking on the model components
       this.copperScene.pickModel(
-        cubeGroup,
+        sphereGroup,
           (mesh) => {
               if (mesh) {
                 // try unconment these two codes, refreash the browser, and see console
@@ -977,31 +822,33 @@ export default {
                 this.currentSelected = mesh
 
                 // this.container.addEventListener('click', this.onClick);
-                console.log(mesh)
+                // console.log(mesh)
                 document.addEventListener('click', this.onClick);
-                console.log(mesh.name);
+                // console.log(mesh.name);
               } else {
                 document.removeEventListener('click', this.onClick);
               }
             }
         );
 
-      this.cubeGroupStored = cubeGroup
+      this.sphereGroupStored = sphereGroup
 
+        // listen for when the network has been run and the object colours should be updated
         $nuxt.$on('run-network', (networkPayload) => {
           console.log('Received run network request');
           // const inputValue = val;
           const [networkSpikes, max0, max1, max2, max3, max4, max5, max6, max7, max8] = networkPayload;
-          this.neuron1 = this.copperScene.scene.getObjectByName("cube1");
-          this.neuron2 = this.copperScene.scene.getObjectByName("cube2");
-          this.neuron3 = this.copperScene.scene.getObjectByName("cube3");
-          this.neuron4 = this.copperScene.scene.getObjectByName("cube4");
-          this.neuron5 = this.copperScene.scene.getObjectByName("cube5");
-          this.neuron6 = this.copperScene.scene.getObjectByName("cube6");
-          this.neuron7 = this.copperScene.scene.getObjectByName("cube7");
-          this.neuron8 = this.copperScene.scene.getObjectByName("cube8");
-          this.neuron9 = this.copperScene.scene.getObjectByName("cube9");
-          console.log("neuron 1 ",this.neuron1)
+          this.neuron1 = this.copperScene.scene.getObjectByName("sphere1");
+          this.neuron2 = this.copperScene.scene.getObjectByName("sphere2");
+          this.neuron3 = this.copperScene.scene.getObjectByName("sphere3");
+          this.neuron4 = this.copperScene.scene.getObjectByName("sphere4");
+          this.neuron5 = this.copperScene.scene.getObjectByName("sphere5");
+          this.neuron6 = this.copperScene.scene.getObjectByName("sphere6");
+          this.neuron7 = this.copperScene.scene.getObjectByName("sphere7");
+          this.neuron8 = this.copperScene.scene.getObjectByName("sphere8");
+          this.neuron9 = this.copperScene.scene.getObjectByName("sphere9");
+          // console.log("neuron 1 ",this.neuron1)
+          // update the colours of the spheres
           this.updateObjectColorNetwork(this.neuron1, max0, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron2, max1, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron3, max2, this.minValue, this.maxValue);
@@ -1011,94 +858,14 @@ export default {
           this.updateObjectColorNetwork(this.neuron7, max6, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron8, max7, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron9, max8, this.minValue, this.maxValue);
-
           this.runNetwork(networkSpikes)
         });
     },
-
-    demoForRaycaster2(){
-      const geometryA = new this.THREE.SphereGeometry( 100, 100, 100 );
-      const materialA = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
-      const cubeA = new this.THREE.Mesh( geometryA, materialA );
-      cubeA.name = "cubeA";
-      const cubeGroupA = new this.THREE.Group()
-      cubeA.position.set(0,0,0)
-      cubeGroupA.add(cubeA)
-      this.copperScene.scene.add(cubeGroupA);
-      // const ambientLight = new THREE.AmbientLight(0xededed, 0.8);
-      // this.copperScene.scene.add(ambientLight)
-      // const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      // this.copperScene.scene.add(directionalLight);
-      // directionalLight.position.set(10, 11, 7)
-
-      // this.copperScene.pickModel(
-      //   cubeGroup,
-      //     (mesh) => {
-      //
-      //
-      //         if (mesh) {
-      //           // try unconment these two codes, refreash the browser, and see console
-      //           // mesh.material.wireframe = false;
-      //           // mesh.material.color.set("pink")
-      //           this.currentSelected = mesh
-      //           this.container.addEventListener('click', this.onClick);
-      //           console.log(mesh);
-      //         } else {
-      //           this.container.removeEventListener('click', this.onClick);
-      //         }
-      //       }
-      //   );
-
-    },
-
-    demoForRaycaster3(){
-      const geometryB1 = new this.THREE.SphereGeometry( 100, 100, 100 );
-      const geometryB2 = new this.THREE.SphereGeometry( 100, 100, 100 );
-      const materialB1 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
-      const materialB2 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
-
-      const objectA = new this.THREE.Mesh( geometryB1, materialB1 );
-      const objectB = new this.THREE.Mesh( geometryB2, materialB2 );
-      objectA.name = "objectA";
-      objectB.name = "objectB"
-      const cubeGroupB = new this.THREE.Group()
-      objectA.position.set(0,-150,600)
-      objectB.position.set(0,150,600)
-      cubeGroupB.add(objectA)
-      cubeGroupB.add(objectB)
-      this.copperScene.scene.add(cubeGroupB);
-
-      // this.copperScene.pickModel(
-      //   cubeGroup,
-      //     (mesh) => {
-      //
-      //
-      //         if (mesh) {
-      //           // try unconment these two codes, refreash the browser, and see console
-      //           // mesh.material.wireframe = false;
-      //           // mesh.material.color.set("pink")
-      //           this.currentSelected = mesh
-      //           this.container.addEventListener('click', this.onClick);
-      //           console.log(mesh);
-      //         } else {
-      //           this.container.removeEventListener('click', this.onClick);
-      //         }
-      //       }
-      //   );
-
-    },
-        demoForRaycaster4() {
-
-        },
   },
 
   watch: {},
 
   beforeDestroy() {
-    // Wirte code before destory this component
-    // this.clearObjects()
-    // this.$nuxt.$off('graph-change');
-    // this.$nuxt.$off('run-network');
   }
 };
 </script>
@@ -1129,13 +896,13 @@ export default {
 }
 
 .slider-value {
-  margin-top: 5px; /* Move the slider value down a bit */
+  margin-top: 5px;
   font-size: 18px;
 }
 
 .button-container {
   display: flex;
-  justify-content: space-around; /* Adjusted to space around for the buttons */
+  justify-content: space-around;
   align-items: center;
   margin-top: 10px;
 }
@@ -1144,24 +911,24 @@ export default {
 .stop-button {
   margin-top: 10px;
 }
+
 .top-center-container {
   text-align: center;
   margin-top: 20px;
 }
 
-/* Add styles for the button */
 .top-center-container button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #4caf50; /* Green background color */
-  color: white; /* White text color */
-  border: none; /* Remove borders */
-  border-radius: 5px; /* Optional: Round the corners */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .top-center-container button:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #45a049;
 }
 </style>
 

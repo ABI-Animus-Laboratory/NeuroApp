@@ -133,8 +133,8 @@ async def get_leaky_voltage(
 
     # Now, you can use these dictionaries in your simulation function
     [voltage, times] = simulation(neuronSim, multimeterSim, dtfl, current)
-    if len(times) >= 499:
-        voltage_new = voltage[-499:]
+    if len(times) >= 199:
+        voltage_new = voltage[-199:]
         # times_new = times[-499:]
     else:
         voltage_new = voltage
@@ -142,7 +142,7 @@ async def get_leaky_voltage(
     times_new = []
     for i in range(1, 500):
         times_new.append(i)
-    max_val = max(voltage_new[-100:])
+    max_val = (voltage_new[-1])
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(voltage_new, times_new)]
     return {"data": voltage_data, "value": max_val}

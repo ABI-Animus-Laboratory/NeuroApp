@@ -8,7 +8,7 @@ def initialiseLeaky():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    dt = 50
+    dt = 1
     dtfl = float(dt)
     weight = 20.0
     delay = 1.0
