@@ -288,8 +288,8 @@
         init1: false,
         init2: false,
         init3: false,
-        updateInterval: 1000,
-        updateTimeStep: 5,
+        updateInterval: 100,
+        updateTimeStep: 1,
 
         currents: [0, 0, 0, 0, 0, 0, 0, 0, 0],
         memCap: [200, 200, 200, 200, 200, 200, 200, 200, 200],

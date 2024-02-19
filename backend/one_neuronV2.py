@@ -8,8 +8,8 @@ def initialiseLeaky():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    dt = 1
-    dtfl = float(dt)
+    # dt = 1
+    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 
@@ -30,8 +30,8 @@ def initialiseSynapse():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    dt = 50
-    dtfl = float(dt)
+    # dt = 50
+    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 
@@ -55,8 +55,8 @@ def initialiseHH():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    dt = 50
-    dtfl = float(dt)
+    # dt = 50
+    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 

@@ -133,14 +133,14 @@ async def get_leaky_voltage(
 
     # Now, you can use these dictionaries in your simulation function
     [voltage, times] = simulation(neuronSim, multimeterSim, dtfl, current)
-    if len(times) >= 199:
-        voltage_new = voltage[-199:]
+    if len(times) >= 99:
+        voltage_new = voltage[-99:]
         # times_new = times[-499:]
     else:
         voltage_new = voltage
         # times_new = times
     times_new = []
-    for i in range(1, 500):
+    for i in range(1, 100):
         times_new.append(i)
     max_val = (voltage_new[-1])
     # Create a list of dictionaries with "y" and "x" keys
@@ -181,16 +181,16 @@ async def get_hh_voltage(
     multimeterSim = multimeterhh_dict[0]
 
     [v, times] = simulationHH(neuronSim, multimeterSim, dtfl, current, mempotential, g_K)
-    if len(times) >= 499:
-        v_new = v[-499:]
+    if len(times) >= 99:
+        v_new = v[-99:]
         # times_new = times[-499:]
     else:
         v_new = v
         # times_new = times
     times_new = []
-    for i in range(1, 500):
+    for i in range(1, 100):
         times_new.append(i)
-    max_val = max(v_new[-100:])
+    max_val = (v_new[-1])
     # Create a list of dictionaries with "y" and "x" keys
     voltage_data = [{"y": v, "x": t} for v, t in zip(v_new, times_new)]
     return {"data": voltage_data, "value": max_val}
@@ -211,19 +211,19 @@ async def get_synapse_voltage(
     multimeterSim2 = multimeter2_dict[0]
 
     [v1, v2, times] = two_neuron_volt(neuronSim1, multimeterSim1, multimeterSim2, dtfl, current)
-    if len(times) >= 499:
-        v1_new = v1[-499:]
-        v2_new = v2[-499:]
+    if len(times) >= 99:
+        v1_new = v1[-99:]
+        v2_new = v2[-99:]
         # times_new = times[-499:]
     else:
         v1_new = v1
         v2_new = v2
         # times_new = times
     times_new = []
-    for i in range(1, 500):
+    for i in range(1, 100):
         times_new.append(i)
-    max_val = max(v1_new[-100:])
-    max_val2 = max(v2_new[-100:])
+    max_val = (v1_new[-1])
+    max_val2 = (v2_new[-1])
     # Create a list of dictionaries with "y" and "x" keys
     data1 = [{"y": v1, "x": t} for v1, t in zip(v1_new, times_new)]
     data2 = [{"y": v2, "x": t} for v2, t in zip(v2_new, times_new)]
