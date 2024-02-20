@@ -34,7 +34,7 @@ cd backend
 # install the requirements
 pip install -r requirements.txt
 # run the backend
-uvicorn myapp:custom_app_instance --reload
+uvicorn main:app --reload
 ```
 
 
