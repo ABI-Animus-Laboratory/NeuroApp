@@ -60,15 +60,9 @@ export default {
       this.model = await fetch(
         'http://127.0.0.1:8000/api/model'
       ).then(res => res.blob())
-
-      console.log(this.model);
     },
 
   created: async function (){
-
-    // await axios.get('http://127.0.0.1:8000/hello/model').then((res)=>{
-    //   console.log(res);
-    // })
     this.$nuxt.$on("send-emitter-data", (data) => {
       console.log(data);
     });
@@ -118,8 +112,6 @@ export default {
 
     // listen for when reset colours is called
     $nuxt.$on('reset-colors', () => {
-      console.log('Received reset colors request');
-      // const inputValue = val;
       this.resetColors()
     });
 
@@ -144,8 +136,6 @@ export default {
 
 
     async start(){
-      // console.log("model name ", this.modelName)
-      // console.log("load model functions.");
       // get model from backend
       this.model = await fetch(
         'http://127.0.0.1:8000/api/model'
@@ -175,7 +165,6 @@ export default {
                 this.copperScene.loadGltf('modelView/neurontutorial.glb', (content) => {
                     this.copperScene.setModelPosition(content, { x: 0.1, y: 0, z: 0 });
                     content.scale.z = -1;
-                    console.log("hi obj: ", content);
                     neuron = content;
                     neuron.name = "neuron";
                     callback();
@@ -185,12 +174,10 @@ export default {
             // Use the loadObjFile function and provide a callback function
             loadObjFile(() => {
                 // // This code will be executed after the object is loaded
-                console.log("Object loaded and positioned:", neuron);
                   if (model_name === "Leaky IAF") {
                       const neuronMeshLeaky = neuron.children[0].children[0]
                       // listen for when graph has updated
                       $nuxt.$on('graph-change-Leaky', (payload) => {
-                        console.log('Received value from Nuxt leaky:', payload);
                         const [val1, val2] = payload;
                         // update the colour of the model
                         this.updateObjectColor(neuronMeshLeaky, val1, this.minValue, this.maxValue);
@@ -199,9 +186,7 @@ export default {
                       const neuronMeshHH = neuron.children[0].children[0]
                       // listen for when graph has updated
                       $nuxt.$on('graph-change-HH', (payload) => {
-                        console.log('Received value from Nuxt HH:', payload);
                         const [val1, val2] = payload;
-                        console.log(val1)
                         // update the colour of the model
                         this.updateObjectColor(neuronMeshHH, val1, this.minValue3, this.maxValue3);
                     });
@@ -210,14 +195,11 @@ export default {
           } else if (model_name === "Healthy") {
             let neuron1;
             let neuron2;
-            console.log("Entered healthy")
             const loadObjFiles = (callback) => {
                 let loadedCount = 0;
-                console.log("Entered loadObjFiles")
 
                 const onObjLoad = () => {
                     loadedCount++;
-                    console.log("Count: ", loadedCount)
                     if (loadedCount === 2) {
                         // Both objects have been loaded
                         callback();
@@ -228,7 +210,6 @@ export default {
                     this.copperScene.setModelPosition(content, { x: -0.8, y: 0, z: 0 });
                     content.scale.set(0.5, 0.5, 0.5);
                     content.scale.z = -1;
-                    console.log("hi obj: ", content);
                     neuron1 = content;
                     neuron1.name = "neuron1";
                     onObjLoad();
@@ -238,22 +219,17 @@ export default {
                     this.copperScene.setModelPosition(content, { x: 1, y: 0, z: 0 });
                     content.scale.set(0.5, 0.5, 0.5);
                     content.scale.z = -1;
-                    console.log("hi obj: ", content);
                     neuron2 = content;
                     neuron2.name = "neuron2";
                     onObjLoad();
                 }, { color: "pink" });
-                console.log("neuron1: ",neuron1)
-                console.log("neuron2: ",neuron2)
             };
 
             // Example usage
             loadObjFiles(() => {
-                    console.log("LoadObjFiles callback run")
                     const neuronMesh1 = neuron1.children[0].children[0]
                     const neuronMesh2 = neuron2.children[0].children[0]
                     $nuxt.$on('graph-change-synapse', (payload) => {
-                      console.log('Received value from Nuxt HH:', payload);
                       const [val1, val2] = payload;
                       this.updateObjectColor(neuronMesh1, val1, this.minValue, this.maxValue);
                       this.updateObjectColor(neuronMesh2, val2, this.minValue2, this.maxValue2);
@@ -272,9 +248,6 @@ export default {
       // update the colour of the network connections based on the spikes array
       try {
         this.spikes = newspikes;
-        console.log(this.spikes)
-        console.log("Sliders visible ",this.slidersVisible)
-        console.log("Arrows visible ",this.arrowSlidersVisible)
 
         if (this.spikes[0]) {
           this.arrows['arrow1'].arrow.setColor('red');
@@ -357,7 +330,6 @@ export default {
     },
 
     onClick() {
-      // console.log("Clicked")
       // determine which sphere or connection has been clicked on and update the slidersVisible/arrowSlidersVisible array accordingly
       this.clicked = true;
       if (this.currentSelected.name === "sphere1") {
@@ -781,7 +753,6 @@ export default {
       arrowPairs.forEach(pair => {
         this.createArrow(pair[0], pair[1], pair[2], verticalPairs);
       });
-      // console.log("arrow 1: ", this.arrows["arrow1"].line)
       // add the connections to the sphere group
       sphereGroup.add(this.arrows["arrow1"].line)
       sphereGroup.add(this.arrows["arrow2"].line)
@@ -801,15 +772,8 @@ export default {
         sphereGroup,
           (mesh) => {
               if (mesh) {
-                // try unconment these two codes, refreash the browser, and see console
-                // mesh.material.wireframe = false;
-                // mesh.material.color.set("pink")
                 this.currentSelected = mesh
-
-                // this.container.addEventListener('click', this.onClick);
-                // console.log(mesh)
                 document.addEventListener('click', this.onClick);
-                // console.log(mesh.name);
               } else {
                 document.removeEventListener('click', this.onClick);
               }
@@ -820,8 +784,6 @@ export default {
 
         // listen for when the network has been run and the object colours should be updated
         $nuxt.$on('run-network', (networkPayload) => {
-          console.log('Received run network request');
-          // const inputValue = val;
           const [networkSpikes, max0, max1, max2, max3, max4, max5, max6, max7, max8] = networkPayload;
           this.neuron1 = this.copperScene.scene.getObjectByName("sphere1");
           this.neuron2 = this.copperScene.scene.getObjectByName("sphere2");
@@ -832,7 +794,6 @@ export default {
           this.neuron7 = this.copperScene.scene.getObjectByName("sphere7");
           this.neuron8 = this.copperScene.scene.getObjectByName("sphere8");
           this.neuron9 = this.copperScene.scene.getObjectByName("sphere9");
-          // console.log("neuron 1 ",this.neuron1)
           // update the colours of the spheres
           this.updateObjectColorNetwork(this.neuron1, max0, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron2, max1, this.minValue, this.maxValue);

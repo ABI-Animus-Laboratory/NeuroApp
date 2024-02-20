@@ -7,8 +7,6 @@ def initialiseLeaky():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    # dt = 1
-    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 
@@ -28,8 +26,6 @@ def initialiseSynapse():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    # dt = 50
-    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 
@@ -53,21 +49,15 @@ def initialiseHH():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    # dt = 50
-    # dtfl = float(dt)
     weight = 20.0
     delay = 1.0
 
     # initialise nodes
     neuron3 = nest.Create("hh_cond_beta_gap_traub")
-    # neuron4 = nest.Create("iaf_psc_alpha")
     multimeter3 = nest.Create("multimeter", params={"record_from": ["V_m"]})
-    # multimeter4 = nest.Create("multimeter", params={"record_from": ["V_m"]})
 
     # initialise connections
     nest.Connect(multimeter3, neuron3)
-    # nest.Connect(multimeter4, neuron4)
-    # nest.Prepare()
     return neuron3, multimeter3
 
 
@@ -88,7 +78,6 @@ def simulation(neuron, multimeter, dtfl, Iin):
     mms = multimeter.get('events')
     Vms = list(mms['V_m'])
     ts = list(mms['times'])
-    # Ims = [Iin] * len(ts)
     return Vms, ts
 
 
@@ -100,7 +89,6 @@ def placeholder(neuron, multimeter, dtfl, Iin):
     mms = multimeter.get('events')
     Vms = list(mms['V_m'])
     ts = list(mms['times'])
-    # Ims = [Iin] * len(ts)
     return Vms, ts
 
 
@@ -119,7 +107,6 @@ def two_neuron_volt(neuron1, multimeter1, multimeter2, dtfl, current):
     Vms2 = list(getMemPot(multimeter2))
     mms2 = multimeter1.get('events')
     ts2 = list(mms2['times'])
-    # Ims = np.append(Ims, [I_input] * (len(ts) - len(Ims)))
     return Vms1, Vms2, ts2
 
 
@@ -133,9 +120,4 @@ def simulationHH(neuron3, multimeter3, dtfl, current, mempotential, g_K):
     mms3 = multimeter3.get('events')
     Vms3 = list(mms3['V_m'])
     ts3 = list(mms3['times'])
-    # Ims = [Iin] * len(ts)
     return Vms3, ts3
-
-
-# def cleanup():
-#     nest.Cleanup()

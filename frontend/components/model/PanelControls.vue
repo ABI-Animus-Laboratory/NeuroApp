@@ -47,7 +47,7 @@
           <h3 style="margin-bottom: 50px; text-decoration: underline;">Neuron {{ index + 1 }} Current</h3>
           <v-slider
             v-model="currents[index]"
-            max="400"
+            max="500"
             min="0"
             thumb-color="blue"
             thumb-label="always"
@@ -69,7 +69,7 @@
           <h3 style="margin-bottom: 50px; text-decoration: underline;">Arrow {{ index + 1 }} Weight</h3>
           <v-slider
             v-model="weights[index]"
-            max="400"
+            max="1000"
             min="1"
             thumb-color="blue"
             thumb-label="always"
@@ -379,11 +379,8 @@
 
       // update the panel of sliders on the network tab when an object is clicked on
       $nuxt.$on('update-panel', (sliders) => {
-      // console.log('Received new slider visible array');
         this.slidersVisible = sliders[0];
         this.arrowSlidersVisible = sliders[1]
-        // console.log("Sliders: ",this.slidersVisible)
-        // console.log("Arrow Sliders: ",this.arrowSlidersVisible)
         for (const value of this.slidersVisible) {
           this.showNetworkGraph = false;
           if (value) {
@@ -417,7 +414,6 @@
             this.neuron = init1["neuron"];
             this.multimeter = init1["multimeter"];
             this.init1 = true;
-            // console.log("Called leaky")
           } else if (this.$title() === "Healthy") {
             // call the synapse initialisation and return the nest variables
             const response = await fetch(`http://127.0.0.1:8000/single/initialiseSynapse`);
@@ -428,7 +424,6 @@
             this.neuron2 = init2["neuron"];
             this.multimeter2 = init2["multimeter"];
             this.init2 = true;
-            // console.log("Called Synapse")
           } else if (this.$title() === "Hodgkin-Huxley") {
             // call the hodgkin-huxley initialisation and return the nest variables
             const response = await fetch(`http://127.0.0.1:8000/single/initialiseHH`);
@@ -437,7 +432,6 @@
             this.neuron3 = init3["neuron"];
             this.multimeter3 = init3["multimeter"];
             this.init3 = true;
-            // console.log("Called hodgkin-huxley")
           }
         } catch (error) {
           console.error("Error initializing neurons:", error);
@@ -460,41 +454,6 @@
         }
       },
 
-      // resetAll() {
-      //   // Reset button colors to original
-      //   this.originalButtonColors.forEach((color, index) => {
-      //     this.$set(this.buttonColors, index, color);
-      //   });
-      //
-      //   // Reset the 'spikes' array
-      //   this.spikes = [];
-      // },
-      //
-      // getButtonColor(index) {
-      //   return this.spikes[index] ? 'red' : 'blue';
-      // },
-      // updateEcg() {
-      //   this.baseRenderer = this.$baseRenderer();
-      //   if (this.baseRenderer) {
-      //     this.baseRenderer.preRenderCallbackFunctions.length = 0;
-      //     var updateIndicatorsAndTimer = () => {
-      //       // these two commented code is for model animation with graph animation.
-      //       // const scene = this.baseRenderer.getCurrentScene();
-      //       // const normaliseTime = scene.getCurrentTime();
-      //       const normaliseTime = this.currentTime / this.totalDuration;
-      //       if (this.currentTime < this.totalDuration){
-      //         this.currentTime += 1;
-      //       }else{
-      //         this.currentTime = 0;
-      //       }
-      //       updateIndicator(normaliseTime);
-      //     };
-      //     this.baseRenderer.addPreRenderCallbackFunction(
-      //       updateIndicatorsAndTimer
-      //     );
-      //   }
-      // },
-
     stopcalculateVoltage() {
         // clear the interval for updating the plot
         clearInterval(this.intervalId);
@@ -502,7 +461,6 @@
 
     async runNetwork() {
       try {
-        // console.log('run network button clicked')
         let currents_string = this.currents.join(',');
         let memCap_string = this.memCap.join(',');
         let weights_string = this.weights.join(',');
@@ -510,7 +468,6 @@
         // run the network simulation
         const response = await fetch(`http://127.0.0.1:8000/network/${currents_string}/${memCap_string}/${weights_string}`);
         const listA = await response.json();
-        // console.log(listA)
         // update the list of spiked neurons and neuron voltage output
         this.spikes = listA["spikes"];
         this.net_volt_0 = listA["data0"];
@@ -590,7 +547,6 @@
             this.graphVal1 = data1["value"]
             this.graphVal4 = data1["value2"]
             this.reset = false;
-            // console.log(data)
             if(this.url1 !== null){
               URL.revokeObjectURL(this.url1)
             }
@@ -598,11 +554,9 @@
             this.url1 = URL.createObjectURL(blob1);
             ecgName = null;
             window.ecgDone = false;
-            // const chartA = this.$refs.chartA;
             chartA.innerHTML = '';
             // update plot 1
             loadChart({name:"testEcg", path:this.url1}, "success", 1.0);
-            console.log(this.graphVal1)
             // send a message to update the colour of the neurons based on the recent maximum voltage value
             $nuxt.$emit('graph-change-synapse', [this.graphVal1, this.graphVal4])
             if(this.url2 !== null){
@@ -684,7 +638,6 @@
 
             ecgName = null;
             window.ecgDone4 = false;
-            // const cECG = this.$refs.cECG;
             chartE.innerHTML = '';
             // load plot
             loadChart5({name:"testEcg5", path:this.url5}, "success", 1.0);
@@ -716,9 +669,6 @@
   }
 
   .trace-box-sm {
-    // width: 80vw;
-    // display: block;
-    // margin: 0 auto;
   }
 
   .rightECG-sm {
@@ -803,8 +753,6 @@
   }
   .top-center-container {
     text-align: center;
-    //margin-top: 20px;
-    //margin-bottom: 20px;
     margin-right: 50px;
     margin-left: 50px;
   }

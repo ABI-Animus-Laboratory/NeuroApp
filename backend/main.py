@@ -33,20 +33,10 @@ app.add_middleware(
 )
 
 
-# def save_voltage_data(json_data):
-#     file_path = "/Users/chrisneville-dowler/NeuroApp/frontend/static/ECG/NormalECG.json"
-#
-#     try:
-#         with open(file_path, "w") as file:
-#             json.dump(json_data, file, indent=2)
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error saving data: {str(e)}")
-#
-
-
 class NeuronMultimeterModel(BaseModel):
     neuron: Dict
     multimeter: Dict
+
 
 class SynapseModel(BaseModel):
     neuron1: Dict
@@ -54,18 +44,10 @@ class SynapseModel(BaseModel):
     multimeter1: Dict
     multimeter2: Dict
 
+
 class HHModel(BaseModel):
     neuronhh: Dict
     multimeterhh: Dict
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-# @app.get("/single/cleanup")
-# async def get_voltage(current: int):
-#     cleanup()
 
 
 @app.get("/single/initialiseLeaky")
@@ -76,9 +58,7 @@ async def callInitialiseLeaky():
     dict2 = None
     dict3 = None
     if dict1 is None:
-        # print("Received - about to call initialise function")
         neuron, multimeter = initialiseLeaky()
-        # print("Initialisation complete - returning to frontend")
         dict1 = {"neuron": neuron, "multimeter": multimeter}
     return dict1
 
@@ -108,6 +88,7 @@ async def callInitialiseHH():
         dict3 = {"neuron": neuron, "multimeter": multimeter}
     return dict3
 
+
 @app.get("/single/clearNetwork")
 async def callClearNetwork():
     clearNetwork()
@@ -117,9 +98,9 @@ async def callClearNetwork():
 
 @app.get("/single/{dtfl}/{current}/{neuron}/{multimeter}")
 async def get_leaky_voltage(
-    dtfl: float,
-    current: int,
-    nm: NeuronMultimeterModel = Depends(callInitialiseLeaky)
+        dtfl: float,
+        current: int,
+        nm: NeuronMultimeterModel = Depends(callInitialiseLeaky)
 ):
     # Access the "neuron" and "multimeter" dictionaries using dot notation
     neuron_dict = nm.get("neuron", {})
@@ -127,14 +108,11 @@ async def get_leaky_voltage(
     neuronSim = neuron_dict[0]
     multimeterSim = multimeter_dict[0]
 
-    # Now, you can use these dictionaries in your simulation function
     [voltage, times] = simulation(neuronSim, multimeterSim, dtfl, current)
     if len(times) >= 99:
         voltage_new = voltage[-99:]
-        # times_new = times[-499:]
     else:
         voltage_new = voltage
-        # times_new = times
     times_new = []
     for i in range(1, 100):
         times_new.append(i)
@@ -149,10 +127,8 @@ async def get_fourth_voltage(current: int):
     [voltage, times] = placeholder(current)
     if len(times) >= 499:
         voltage_new = voltage[-499:]
-        # times_new = times[-499:]
     else:
         voltage_new = voltage
-        # times_new = times
     times_new = []
     for i in range(1, 500):
         times_new.append(i)
@@ -164,11 +140,11 @@ async def get_fourth_voltage(current: int):
 
 @app.get("/single/{dtfl}/{current}/{mempotential}/{g_K}/{neuron3}/{multimeter3}")
 async def get_hh_voltage(
-    dtfl: float,
-    current: int,
-    mempotential: float,
-    g_K: float,
-    nm3: HHModel = Depends(callInitialiseHH)
+        dtfl: float,
+        current: int,
+        mempotential: float,
+        g_K: float,
+        nm3: HHModel = Depends(callInitialiseHH)
 ):
     neuronhh_dict = nm3.get("neuron", {})
     multimeterhh_dict = nm3.get("multimeter", {})
@@ -178,10 +154,8 @@ async def get_hh_voltage(
     [v, times] = simulationHH(neuronSim, multimeterSim, dtfl, current, mempotential, g_K)
     if len(times) >= 99:
         v_new = v[-99:]
-        # times_new = times[-499:]
     else:
         v_new = v
-        # times_new = times
     times_new = []
     for i in range(1, 100):
         times_new.append(i)
@@ -193,9 +167,9 @@ async def get_hh_voltage(
 
 @app.get("/synapse/{dtfl}/{current}/{neuron1}/{multimeter1}/{multimeter2}")
 async def get_synapse_voltage(
-    dtfl: float,
-    current: int,
-    nm2: SynapseModel = Depends(callInitialiseSynapse)
+        dtfl: float,
+        current: int,
+        nm2: SynapseModel = Depends(callInitialiseSynapse)
 ):
     neuron1_dict = nm2.get("neuron1", {})
     neuron2_dict = nm2.get("neuron2", {})
@@ -209,11 +183,9 @@ async def get_synapse_voltage(
     if len(times) >= 99:
         v1_new = v1[-99:]
         v2_new = v2[-99:]
-        # times_new = times[-499:]
     else:
         v1_new = v1
         v2_new = v2
-        # times_new = times
     times_new = []
     for i in range(1, 100):
         times_new.append(i)
@@ -224,13 +196,6 @@ async def get_synapse_voltage(
     data2 = [{"y": v2, "x": t} for v2, t in zip(v2_new, times_new)]
     data = {"data1": data1, "data2": data2, "value": max_val, "value2": max_val2}
     return data
-
-
-@app.get("/api/model")
-async def get_display_model():
-    model_path = "./data/mask.obj"
-    file_res = FileResponse(model_path, media_type="application/octet-stream", filename="mask.obj")
-    return file_res
 
 
 @app.get(
@@ -265,6 +230,7 @@ async def get_voltage(currents: str, memCap: str, weights: str):
     data6 = [{"y": volt6, "x": times} for volt6, times in zip(v6, t)]
     data7 = [{"y": volt7, "x": times} for volt7, times in zip(v7, t)]
     data8 = [{"y": volt8, "x": times} for volt8, times in zip(v8, t)]
-    data = {"spikes": spiked, "data0": data0, "data1": data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7, "data8": data8, "max0": max0, "max1": max1, "max2": max2, "max3": max3, "max4": max4, "max5": max5, "max6": max6, "max7": max7, "max8": max8}
+    data = {"spikes": spiked, "data0": data0, "data1": data1, "data2": data2, "data3": data3, "data4": data4,
+            "data5": data5, "data6": data6, "data7": data7, "data8": data8, "max0": max0, "max1": max1, "max2": max2,
+            "max3": max3, "max4": max4, "max5": max5, "max6": max6, "max7": max7, "max8": max8}
     return data
-
