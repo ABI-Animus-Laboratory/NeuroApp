@@ -2,7 +2,6 @@ import nest
 import numpy as np
 
 def initialiseLeaky():
-    print("initialise function called")
     nest.set_verbosity("M_WARNING")
     nest.ResetKernel()
     nest.set(min_delay=0.5, max_delay=1.0)
@@ -20,7 +19,6 @@ def initialiseLeaky():
     # initialise connections
     nest.Connect(multimeter, neuron)
     # nest.Prepare()
-    print("network initialised")
     return neuron, multimeter
 
 
@@ -80,7 +78,6 @@ def clearNetwork():
     global dict2
     dict = None
     dict2 = None
-    print("network cleared")
 
 
 def simulation(neuron, multimeter, dtfl, Iin):
@@ -89,12 +86,8 @@ def simulation(neuron, multimeter, dtfl, Iin):
     # NEST simulation
     nest.Simulate(dtfl)
     mms = multimeter.get('events')
-    print(mms)
     Vms = list(mms['V_m'])
-    print(Vms)
     ts = list(mms['times'])
-    # print(Vms)
-    # print(ts)
     # Ims = [Iin] * len(ts)
     return Vms, ts
 

@@ -88,13 +88,6 @@ export default {
     this.container = this.$refs.baseDomObject;
     this.modelName = this.$model().name;
 
-    // Set initial styles and values
-    // this.container.style.display = "flex";
-    // this.container.style.flexDirection = "column";
-    // this.container.style.alignItems = "center";
-    // this.container.style.justifyContent = "flex-start";
-    // this.container.style.height = "100vh"; // Set a fixed height for the top container
-
     // Set initial value of voltage to null
     this.voltage = null;
     this.voltages = [];
@@ -712,15 +705,7 @@ export default {
 
     demoForRaycaster(){
       // initialise geometries
-      const geometry1 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry2 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry3 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry4 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry5 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry6 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry7 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry8 = new this.THREE.SphereGeometry( 50, 50, 50 );
-      const geometry9 = new this.THREE.SphereGeometry( 50, 50, 50 );
+      const geometry = new this.THREE.SphereGeometry( 50, 50, 50 );
 
       // initialise materials
       const material1 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
@@ -734,15 +719,15 @@ export default {
       const material9 = new this.THREE.MeshBasicMaterial( {color: 'pink'} );
 
       // create spheres
-      const sphere1 = new this.THREE.Mesh( geometry1, material1 );
-      const sphere2 = new this.THREE.Mesh( geometry2, material2 );
-      const sphere3 = new this.THREE.Mesh( geometry3, material3 );
-      const sphere4 = new this.THREE.Mesh( geometry4, material4 );
-      const sphere5 = new this.THREE.Mesh( geometry5, material5 );
-      const sphere6 = new this.THREE.Mesh( geometry6, material6 );
-      const sphere7 = new this.THREE.Mesh( geometry7, material7 );
-      const sphere8 = new this.THREE.Mesh( geometry8, material8 );
-      const sphere9 = new this.THREE.Mesh( geometry9, material9 );
+      const sphere1 = new this.THREE.Mesh( geometry, material1 );
+      const sphere2 = new this.THREE.Mesh( geometry, material2 );
+      const sphere3 = new this.THREE.Mesh( geometry, material3 );
+      const sphere4 = new this.THREE.Mesh( geometry, material4 );
+      const sphere5 = new this.THREE.Mesh( geometry, material5 );
+      const sphere6 = new this.THREE.Mesh( geometry, material6 );
+      const sphere7 = new this.THREE.Mesh( geometry, material7 );
+      const sphere8 = new this.THREE.Mesh( geometry, material8 );
+      const sphere9 = new this.THREE.Mesh( geometry, material9 );
 
       // label spheres
       sphere1.name = "sphere1";

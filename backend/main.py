@@ -76,11 +76,10 @@ async def callInitialiseLeaky():
     dict2 = None
     dict3 = None
     if dict1 is None:
-        print("Received - about to call initialise function")
+        # print("Received - about to call initialise function")
         neuron, multimeter = initialiseLeaky()
-        print("Initialisation complete - returning to frontend")
+        # print("Initialisation complete - returning to frontend")
         dict1 = {"neuron": neuron, "multimeter": multimeter}
-        print(dict1)
     return dict1
 
 
@@ -114,8 +113,6 @@ async def callClearNetwork():
     clearNetwork()
     dict1 = None
     dict2 = None
-    print(dict1)
-    print(dict2)
 
 
 @app.get("/single/{dtfl}/{current}/{neuron}/{multimeter}")
@@ -124,7 +121,6 @@ async def get_leaky_voltage(
     current: int,
     nm: NeuronMultimeterModel = Depends(callInitialiseLeaky)
 ):
-    print(current)
     # Access the "neuron" and "multimeter" dictionaries using dot notation
     neuron_dict = nm.get("neuron", {})
     multimeter_dict = nm.get("multimeter", {})
@@ -150,7 +146,6 @@ async def get_leaky_voltage(
 
 @app.get("/fourth/{current}")
 async def get_fourth_voltage(current: int):
-    print(current)
     [voltage, times] = placeholder(current)
     if len(times) >= 499:
         voltage_new = voltage[-499:]
@@ -247,13 +242,9 @@ async def get_voltage(currents: str, memCap: str, weights: str):
     dict1 = None
     dict2 = None
     dict3 = None
-    # print(weights)
-    # print(currents)
     currents_list = list(map(float, currents.split(',')))
     memCap_list = list(map(float, memCap.split(',')))
     weights_list = list(map(float, weights.split(',')))
-    # print(weights)
-    # print(currents)
 
     spiked, v0, v1, v2, v3, v4, v5, v6, v7, v8, t = network(currents_list, memCap_list, weights_list)
     max0 = max(v0)
