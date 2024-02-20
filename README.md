@@ -2,12 +2,17 @@
 
 [![Read the Docs][readthedocs]][readthedocs-url]
 
+## Operating System
+- Linux or macOS are officially supported by NEST.
+- Windows is not officially supported by NEST.
+
 ## Setup Project
 
-- Install nest-simulator
+- Install NEST
   - Version 3.6
   - [Installation instructions](https://nest-simulator.readthedocs.io/en/stable/installation/user.html#user-install)
   - The recommended installation method is using the [conda forge install](https://nest-simulator.readthedocs.io/en/stable/installation/conda_forge.html#conda-forge-install) within a conda environment as follows:
+    - _NOTE: This conda installation method will only work for Linux or macOS systems_
     - Install [anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
     - To install the latest version of NEST in a new environment called ENVVAME, run the following code in the terminal
     ```sh
