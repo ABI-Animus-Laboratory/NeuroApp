@@ -9,7 +9,6 @@ from one_neuronV2 import two_neuron_volt
 from one_neuronV2 import simulationHH
 from one_neuronV2 import placeholder
 from one_neuronV2 import clearNetwork
-# from one_neuronV2 import cleanup
 from one_neuronV2 import initialiseLeaky
 from one_neuronV2 import initialiseSynapse
 from one_neuronV2 import initialiseHH

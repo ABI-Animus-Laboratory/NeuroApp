@@ -16,7 +16,6 @@ def initialiseLeaky():
 
     # initialise connections
     nest.Connect(multimeter, neuron)
-    # nest.Prepare()
     return neuron, multimeter
 
 
@@ -39,7 +38,6 @@ def initialiseSynapse():
     nest.Connect(neuron1, neuron2, syn_spec={"synapse_model": "stdp_synapse", "weight": weight, "delay": delay})
     nest.Connect(multimeter1, neuron1)
     nest.Connect(multimeter2, neuron2)
-    # nest.Prepare()
     return neuron1, neuron2, multimeter1, multimeter2
 
 

@@ -54,7 +54,7 @@
   },
   "failure": {
     "title": "Network",
-    "heading": "Neuron Network",
+    "heading": "Neuron network",
     "icon": "mdi-grid",
     "subTopics": {
       "healthy": {

@@ -233,54 +233,26 @@
   export default {
     data() {
       return {
-        idleTime: 0,
-        idleTimeLimit: 300000,
-        oldTime: new Date(),
-        render: undefined,
-        ecgd: "",
-        currentTime:0,
-        totalDuration:300,
-        originalButtonColors: [],
         spikes: [],
-        startNode: null,
-        buttonColors: Array.from({ length: 9 }, () => 'blue'),
-
         neuron:null,
         neuron1:null,
         neuron2:null,
         neuron3:null,
-        neuron4:null,
         multimeter:null,
         multimeter1:null,
         multimeter2:null,
         multimeter3:null,
-        multimeter4:null,
-
         url1:null,
         url2:null,
         url3:null,
         url4:null,
         url5:null,
-        test1:1,
-        test2:1,
-        test3:1,
-        test4:1,
         currentA: 0,
         currentB: 0,
         currentC: 0,
-        currentD: 0,
         mempotential: 200.0,
         g_K: 6000.0,
-        voltage: null,
-        voltages: [],
         intervalId: null,
-        intervalId2: null,
-        intervalId3: null,
-        isVoltageVisible: false,
-        isTimeVisible: false,
-        times: [],
-        time: null,
-        reset: false,
         graphVal1: -70,
         graphVal2: -70,
         graphVal3: -70,
@@ -290,7 +262,6 @@
         init3: false,
         updateInterval: 100,
         updateTimeStep: 1,
-
         currents: [0, 0, 0, 0, 0, 0, 0, 0, 0],
         memCap: [200, 200, 200, 200, 200, 200, 200, 200, 200],
         weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
@@ -334,12 +305,6 @@
         this.initialiseNeurons()
       }
 
-      // initialise arrays for plotting
-      this.voltages = [];
-      this.times = [];
-
-      this.originalButtonColors = Array.from({ length: 9 }, () => 'blue');
-
       this.$nextTick(() => {
         const chartA = this.$refs.chartA;
         if (chartA) {
@@ -381,16 +346,11 @@
       $nuxt.$on('update-panel', (sliders) => {
         this.slidersVisible = sliders[0];
         this.arrowSlidersVisible = sliders[1]
-        for (const value of this.slidersVisible) {
-          this.showNetworkGraph = false;
-          if (value) {
-            // Set the variable to true if at least one value is true
-            this.showNetworkGraph = true;
-            break; // Exit the loop early since we found a true value
-          }
-        }
-        // update the plots
-        this.calculateVoltage()
+        this.showNetworkGraph = this.slidersVisible.some((values) => values === true);
+        // Use $nextTick to ensure that showNetworkGraph has been updated in the DOM
+        this.$nextTick(() => {
+          this.calculateVoltage();
+        });
       });
 
       // initialise the interval for updating the graph
@@ -521,7 +481,6 @@
             const response = await fetch(`http://127.0.0.1:8000/single/${this.updateTimeStep}/${this.currentA}/${this.neuron}/${this.multimeter}`);
             const dataA = await response.json();
             const dataA1 = dataA["data"]
-            this.reset = false;
             if(this.url3 !== null){
               URL.revokeObjectURL(this.url3)
             }
@@ -546,7 +505,6 @@
             const data3 = data1["data2"]
             this.graphVal1 = data1["value"]
             this.graphVal4 = data1["value2"]
-            this.reset = false;
             if(this.url1 !== null){
               URL.revokeObjectURL(this.url1)
             }
@@ -580,7 +538,6 @@
             const data4 = await response.json();
             const data41 = data4["data"]
             this.graphVal2 = data4["value"]
-            this.reset = false;
             if(this.url4 !== null){
               URL.revokeObjectURL(this.url4)
             }
@@ -601,7 +558,6 @@
         } else if (this.$title() === "network")
           try {
             // determine the plot URL based on which neuron has been clicked on
-            this.reset = false;
             if (this.url5 !== null) {
               URL.revokeObjectURL(this.url5)
             }
@@ -676,10 +632,12 @@
     height: 40vw;
     min-height: 80px;
   }
+
   .rightECG-md {
     width: 25vw;
     min-height: 300px;
   }
+
   .graph-text-md {
     display: flex;
     justify-content: center;
@@ -687,12 +645,14 @@
     flex-direction: column;
     width: 15vw;
   }
+
   .graph-text-sm {
     width: 100vw;
     p {
       width: 100%;
     }
   }
+
   .graph-comm {
     display: flex;
     justify-content: center;
@@ -702,6 +662,7 @@
     margin-right: 60px;
     margin-bottom: 40px !important;
   }
+
   .graph-comm2 {
     display: flex;
     justify-content: center;
@@ -711,6 +672,7 @@
     margin-right: 60px;
     margin-bottom: 10px;
   }
+
   .graph-comm3 {
     display: flex;
     justify-content: center;
@@ -720,6 +682,7 @@
     margin-right: 60px;
     margin-bottom: 40px !important;
   }
+
   .graph-comm4 {
     display: flex;
     justify-content: center;
@@ -729,6 +692,7 @@
     margin-right: 60px;
     margin-bottom: 40px !important;
   }
+
   .graph-comm5 {
     display: flex;
     justify-content: center;
@@ -738,19 +702,16 @@
     margin-right: 60px;
     margin-bottom: 40px !important;
   }
+
   .EGC-lg {
     height: 20vh;
     margin-bottom: 10vh;
   }
+
   .EGC-sm {
     width: 100vw;
   }
-  .LVP-lg {
-    height: 20vh;
-  }
-  .LVP-sm {
-    width: 100vw;
-  }
+
   .top-center-container {
     text-align: center;
     margin-right: 50px;
@@ -769,6 +730,7 @@
     position: relative;
     top: -20px;
   }
+
   .neuron1-subheader {
     font-weight: bold;
     text-decoration: underline;
@@ -794,35 +756,6 @@
     width: 100%;
   }
 
-  .slider-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .slider-value {
-    margin-top: 5px;
-    font-size: 18px;
-  }
-
-  .v-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-  }
-
-  .button-gap {
-    margin-top: 10px;
-  }
-
-  .reset-button {
-    width: 100px;
-  }
-
   .button-container {
     display: flex;
     justify-content: space-around;
@@ -831,10 +764,6 @@
     margin-bottom: 20px;
   }
 
-  .start-button,
-  .stop-button {
-    margin-top: 10px;
-  }
   .top-center-container {
     text-align: center;
     margin-top: 20px;

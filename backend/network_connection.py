@@ -1,7 +1,6 @@
 import nest
 
 
-# conn01, conn03, conn12, conn14, conn25, conn34, conn36, conn45, conn47, conn58, conn67, conn78
 def network(currents, memCap, weights):
     nest.set_verbosity("M_WARNING")
     nest.ResetKernel()
@@ -69,7 +68,7 @@ def network(currents, memCap, weights):
     neuronpop[8].C_m = memCap[8]
 
     # run simulation
-    nest.Simulate(500.0)
+    nest.Simulate(200.0)
 
     # determine which neurons have spiked
     if sr0.n_events > 0:

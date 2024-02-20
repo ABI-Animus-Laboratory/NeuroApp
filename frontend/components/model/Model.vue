@@ -19,20 +19,9 @@ export default {
       copperScene:null,
       container: null,
       modelName: "Model load on here!",
-      helloworld:"",
       model:null,
-      current: 0,
-      voltage: null,
-      voltages: [],
-      intervalId: null,
-      isVoltageVisible: false,
-      isTimeVisible: false,
-      times: [],
-      time: null,
-      reset: false,
       currentSelected: null,
       currentStartValue: null,
-      startNode: null,
       spikes: [],
       minValue: -70,
       maxValue: -57.5,
@@ -40,10 +29,8 @@ export default {
       maxValue2: -69.5,
       minValue3: -70,
       maxValue3: -35,
-      clicked: false,
       slidersVisible: [false, false, false, false, false, false, false, false, false],
       arrowSlidersVisible: [false, false, false, false, false, false, false, false, false, false, false, false],
-      updateInterval: 1000, // Set the update interval in milliseconds
       neuron1: null,
       neuron2: null,
       neuron3: null,
@@ -82,16 +69,9 @@ export default {
     this.container = this.$refs.baseDomObject;
     this.modelName = this.$model().name;
 
-    // Set initial value of voltage to null
-    this.voltage = null;
-    this.voltages = [];
-    this.time = null;
-    this.times = [];
+    // initialise arrow list
     this.arrows = {}
 
-    // Ensure visibility is set to true when the component is mounted
-    this.isVoltageVisible = true;
-    this.isTimeVisible = true;
 
     setTimeout(() => {
       this.mdAndUp
@@ -157,8 +137,7 @@ export default {
           this.copperScene = this.baseRenderer.createScene(model_name);
           this.baseRenderer.setCurrentScene(this.copperScene);
           if (model_name === "network") {
-            this.demoForRaycaster();
-          // this.copperScene.loadViewUrl(viewURL);
+            this.createNetworkObjects();
           } else if (model_name === "Leaky IAF" || model_name === "Hodgkin-Huxley") {
             let neuron;
             const loadObjFile = (callback) => {
@@ -225,7 +204,6 @@ export default {
                 }, { color: "pink" });
             };
 
-            // Example usage
             loadObjFiles(() => {
                     const neuronMesh1 = neuron1.children[0].children[0]
                     const neuronMesh2 = neuron2.children[0].children[0]
@@ -331,7 +309,6 @@ export default {
 
     onClick() {
       // determine which sphere or connection has been clicked on and update the slidersVisible/arrowSlidersVisible array accordingly
-      this.clicked = true;
       if (this.currentSelected.name === "sphere1") {
         for (let i = 0; i < this.slidersVisible.length; i++) {
           if (i === 0) {
@@ -569,10 +546,10 @@ export default {
     },
 
     gradientColorMapNetwork(value) {
-      // Interpolate between light red (hue: 0, saturation: 1, lightness: 0.8) and bright red (hue: 0, saturation: 1, lightness: 0.5)
+      // Interpolate between light red and bright red
       const hue = 0;
       const saturation = 1;
-      const lightness = 0.8 - value * 0.3; // Interpolate lightness between 0.8 and 0.5
+      const lightness = 0.8 - value * 0.3;
       return new this.THREE.Color().setHSL(hue, saturation, lightness);
     },
 
@@ -587,13 +564,13 @@ export default {
         // Ensure that value is within the range [minValue, maxValue]
         value = Math.min(Math.max(value, minValue), maxValue);
 
-        // If the value is equal to minValue, set it to the default color (1, 1, 1)
+        // If the value is equal to minValue, set it to the default color
         if (value === minValue) {
-            return new this.THREE.Color(1, 1, 1); // Use RGB representation (1, 1, 1)
+            return new this.THREE.Color(1, 1, 1);
         }
 
-        // Interpolate between the default color (1, 1, 1) and red (#FF0000)
-        const defaultColor = new this.THREE.Color(1, 1, 1); // Use RGB representation (1, 1, 1)
+        // Interpolate between the default color and red
+        const defaultColor = new this.THREE.Color(1, 1, 1);
         const red = new this.THREE.Color('#FF0000');
 
         const normalizedValue = (value - minValue) / (maxValue - minValue);
@@ -606,21 +583,6 @@ export default {
     updateObjectColor(object, value, minValue, maxValue) {
         const color = this.gradientColorMap(value, minValue, maxValue);
         object.material.color.copy(color);
-    },
-
-    gradientColorMap2(value) {
-      // Interpolate between light green (hue: 120, saturation: 1, lightness: 0.8) and dark green (hue: 120, saturation: 1, lightness: 0.5)
-      const hue = 120; // Green hue
-      const saturation = 1;
-      const lightness = 0.8 - value * 0.3; // Interpolate lightness between 0.8 and 0.5
-      return new this.THREE.Color().setHSL(hue, saturation, lightness);
-    },
-
-    // Function to update the color of the object based on a value
-    updateObjectColor2(object, value, minValue, maxValue) {
-      const normalizedValue = Math.min(Math.max((value - minValue) / (maxValue - minValue), 0), 1);
-      const color = this.gradientColorMap(normalizedValue);
-      object.material.color.copy(color);
     },
 
     createArrow(start, end, identifier, verticalPairs, sphereRadius) {
@@ -675,7 +637,7 @@ export default {
       };
     },
 
-    demoForRaycaster(){
+    createNetworkObjects(){
       // initialise geometries
       const geometry = new this.THREE.SphereGeometry( 50, 50, 50 );
 
@@ -817,64 +779,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.model {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-}
-
-.top-center-container {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.slider-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.current-input {
-  padding: 5px;
-  font-size: 16px;
-}
-
-.slider-value {
-  margin-top: 5px;
-  font-size: 18px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.start-button,
-.stop-button {
-  margin-top: 10px;
-}
-
-.top-center-container {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.top-center-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.top-center-container button:hover {
-  background-color: #45a049;
-}
+  .model {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+  }
 </style>
 

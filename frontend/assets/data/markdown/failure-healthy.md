@@ -8,6 +8,10 @@ Adjust the properties within the network and click 'Start' to run the simulation
 
 The membrane potential of each neuron can be observed after the simulation by clicking on the corresponding sphere.
 
+Use 'Clear' to reset the network objects to their starting colours while maintaining the network values.
+
+Use 'Reset Network' to reset all the network values and object colours.
+
 ---
 
 <span class="md-notice"> 
