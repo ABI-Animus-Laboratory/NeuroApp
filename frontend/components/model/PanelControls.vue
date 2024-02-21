@@ -10,7 +10,8 @@
       <div class="top-center-container">
       <div v-if="$title() === 'network'" class="button-container">
           <!-- Buttons for the network tab -->
-          <button @click="runNetwork" style="background-color: #4CAF50; color: white;">Start</button>
+          <button @click="startNetwork" style="background-color: #4CAF50; color: white;">Start</button>
+          <button @click="stopNetwork" style="background-color: #E53935; color: white;">Stop</button>
           <button @click="resetColors" style="background-color: #FF9800; color: white;">Clear</button>
           <button @click="resetNetwork" style="background-color: #2196F3; color: white;">Reset Values</button>
       </div>
@@ -412,6 +413,14 @@
         } catch (error) {
           console.error('Error triggering function:', error);
         }
+      },
+
+      startNetwork() {
+        this.intervalId = setInterval(this.runNetwork, this.updateInterval);
+      },
+
+      stopNetwork() {
+        clearInterval(this.intervalId);
       },
 
     stopcalculateVoltage() {
