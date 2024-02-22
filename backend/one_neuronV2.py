@@ -25,7 +25,7 @@ def initialiseSynapse():
     nest.set(min_delay=0.5, max_delay=1.0)
 
     # parameters
-    weight = 20.0
+    weight = 100.0
     delay = 1.0
 
     # initialise nodes

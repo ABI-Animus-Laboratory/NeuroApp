@@ -60,7 +60,7 @@
           <v-slider
             v-model="memCap[index]"
             max="1000"
-            min="0"
+            min="1"
             thumb-color="blue"
             thumb-label="always"
             style="width: 400px;"
@@ -261,6 +261,7 @@
         init1: false,
         init2: false,
         init3: false,
+        init4: false,
         updateInterval: 100,
         updateTimeStep: 1,
         currents: [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -287,7 +288,9 @@
         net_max5: -70.0,
         net_max6: -70.0,
         net_max7: -70.0,
-        net_max8: -70.0
+        net_max8: -70.0,
+        neuronpop: null,
+        multimeters: null
       };
     },
     computed: {
@@ -301,7 +304,7 @@
     },
 
     mounted() {
-      if (!this.init1 && !this.init2 && !this.init3) {
+      if (!this.init1 && !this.init2 && !this.init3 && !this.init4) {
         // initialise the nest simulation based on the current tab
         this.initialiseNeurons()
       }
@@ -393,6 +396,14 @@
             this.neuron3 = init3["neuron"];
             this.multimeter3 = init3["multimeter"];
             this.init3 = true;
+          } else if (this.$title() === "network") {
+            // call the network initialisation and return the nest variables
+            const response = await fetch(`http://127.0.0.1:8000/single/initialiseNetwork`);
+            const init4 = await response.json();
+            // store the nest variables
+            this.neuronpop = init4["neuronpop"];
+            this.multimeters = init4["multimeters"];
+            this.init4 = true;
           }
         } catch (error) {
           console.error("Error initializing neurons:", error);
@@ -435,10 +446,9 @@
         let weights_string = this.weights.join(',');
 
         // run the network simulation
-        const response = await fetch(`http://127.0.0.1:8000/network/${currents_string}/${memCap_string}/${weights_string}`);
+        const response = await fetch(`http://127.0.0.1:8000/network/${this.updateTimeStep}/${currents_string}/${memCap_string}/${weights_string}/${this.neuronpop}/${this.multimeters}`);
         const listA = await response.json();
         // update the list of spiked neurons and neuron voltage output
-        this.spikes = listA["spikes"];
         this.net_volt_0 = listA["data0"];
         this.net_volt_1 = listA["data1"];
         this.net_volt_2 = listA["data2"];
@@ -459,7 +469,7 @@
         this.net_max8 = listA["max8"];
 
         // send the message to update the colour of the neurons and connections
-        $nuxt.$emit('run-network', [this.spikes, this.net_max0, this.net_max1, this.net_max2, this.net_max3, this.net_max4, this.net_max5, this.net_max6, this.net_max7,this.net_max8])
+        $nuxt.$emit('run-network', [this.net_max0, this.net_max1, this.net_max2, this.net_max3, this.net_max4, this.net_max5, this.net_max6, this.net_max7,this.net_max8])
 
         // update the plot
         this.calculateVoltage()
@@ -615,6 +625,9 @@
     beforeDestroy() {
     // Write code before destroying this component
       this.stopcalculateVoltage();
+      if (this.$title() === "network") {
+        this.resetColors()
+      }
   }
   };
 

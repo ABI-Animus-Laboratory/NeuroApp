@@ -26,7 +26,7 @@ export default {
       minValue: -70,
       maxValue: -57.5,
       minValue2: -70,
-      maxValue2: -69.5,
+      maxValue2: -67.5,
       minValue3: -70,
       maxValue3: -35,
       slidersVisible: [false, false, false, false, false, false, false, false, false],
@@ -222,90 +222,90 @@ export default {
         this.copperScene.onWindowResize();
     },
 
-    async runNetwork(newspikes) {
-      // update the colour of the network connections based on the spikes array
-      try {
-        this.spikes = newspikes;
-
-        if (this.spikes[0]) {
-          this.arrows['arrow1'].arrow.setColor('red');
-          this.arrows['arrow1'].line.material.color.set('red');
-          this.arrows['arrow7'].arrow.setColor('red');
-          this.arrows['arrow7'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow1'].arrow.setColor('silver');
-          this.arrows['arrow1'].line.material.color.set('silver');
-          this.arrows['arrow7'].arrow.setColor('silver');
-          this.arrows['arrow7'].line.material.color.set('silver');
-        }
-        if (this.spikes[1]) {
-          this.arrows['arrow2'].arrow.setColor('red');
-          this.arrows['arrow2'].line.material.color.set('red');
-          this.arrows['arrow9'].arrow.setColor('red');
-          this.arrows['arrow9'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow2'].arrow.setColor('silver');
-          this.arrows['arrow2'].line.material.color.set('silver');
-          this.arrows['arrow9'].arrow.setColor('silver');
-          this.arrows['arrow9'].line.material.color.set('silver');
-        }
-        if (this.spikes[2]) {
-          this.arrows['arrow11'].arrow.setColor('red');
-          this.arrows['arrow11'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow11'].arrow.setColor('silver');
-          this.arrows['arrow11'].line.material.color.set('silver');
-        }
-        if (this.spikes[3]) {
-          this.arrows['arrow3'].arrow.setColor('red');
-          this.arrows['arrow3'].line.material.color.set('red');
-          this.arrows['arrow8'].arrow.setColor('red');
-          this.arrows['arrow8'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow3'].arrow.setColor('silver');
-          this.arrows['arrow3'].line.material.color.set('silver');
-          this.arrows['arrow8'].arrow.setColor('silver');
-          this.arrows['arrow8'].line.material.color.set('silver');
-        }
-        if (this.spikes[4]) {
-          this.arrows['arrow4'].arrow.setColor('red');
-          this.arrows['arrow4'].line.material.color.set('red');
-          this.arrows['arrow10'].arrow.setColor('red');
-          this.arrows['arrow10'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow4'].arrow.setColor('silver');
-          this.arrows['arrow4'].line.material.color.set('silver');
-          this.arrows['arrow10'].arrow.setColor('silver');
-          this.arrows['arrow10'].line.material.color.set('silver');
-        }
-        if (this.spikes[5]) {
-          this.arrows['arrow12'].arrow.setColor('red');
-          this.arrows['arrow12'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow12'].arrow.setColor('silver');
-          this.arrows['arrow12'].line.material.color.set('silver');
-        }
-        if (this.spikes[6]) {
-          this.arrows['arrow5'].arrow.setColor('red');
-          this.arrows['arrow5'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow5'].arrow.setColor('silver');
-          this.arrows['arrow5'].line.material.color.set('silver');
-        }
-        if (this.spikes[7]) {
-          this.arrows['arrow6'].arrow.setColor('red');
-          this.arrows['arrow6'].line.material.color.set('red');
-        } else {
-          this.arrows['arrow6'].arrow.setColor('silver');
-          this.arrows['arrow6'].line.material.color.set('silver');
-        }
-        if (this.spikes[8]) {
-        } else {
-        }
-      } catch (error) {
-        console.error("Error running network:", error);
-      }
-    },
+    // async runNetwork(newspikes) {
+    //   // update the colour of the network connections based on the spikes array
+    //   try {
+    //     this.spikes = newspikes;
+    //
+    //     if (this.spikes[0]) {
+    //       this.arrows['arrow1'].arrow.setColor('red');
+    //       this.arrows['arrow1'].line.material.color.set('red');
+    //       this.arrows['arrow7'].arrow.setColor('red');
+    //       this.arrows['arrow7'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow1'].arrow.setColor('silver');
+    //       this.arrows['arrow1'].line.material.color.set('silver');
+    //       this.arrows['arrow7'].arrow.setColor('silver');
+    //       this.arrows['arrow7'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[1]) {
+    //       this.arrows['arrow2'].arrow.setColor('red');
+    //       this.arrows['arrow2'].line.material.color.set('red');
+    //       this.arrows['arrow9'].arrow.setColor('red');
+    //       this.arrows['arrow9'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow2'].arrow.setColor('silver');
+    //       this.arrows['arrow2'].line.material.color.set('silver');
+    //       this.arrows['arrow9'].arrow.setColor('silver');
+    //       this.arrows['arrow9'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[2]) {
+    //       this.arrows['arrow11'].arrow.setColor('red');
+    //       this.arrows['arrow11'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow11'].arrow.setColor('silver');
+    //       this.arrows['arrow11'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[3]) {
+    //       this.arrows['arrow3'].arrow.setColor('red');
+    //       this.arrows['arrow3'].line.material.color.set('red');
+    //       this.arrows['arrow8'].arrow.setColor('red');
+    //       this.arrows['arrow8'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow3'].arrow.setColor('silver');
+    //       this.arrows['arrow3'].line.material.color.set('silver');
+    //       this.arrows['arrow8'].arrow.setColor('silver');
+    //       this.arrows['arrow8'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[4]) {
+    //       this.arrows['arrow4'].arrow.setColor('red');
+    //       this.arrows['arrow4'].line.material.color.set('red');
+    //       this.arrows['arrow10'].arrow.setColor('red');
+    //       this.arrows['arrow10'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow4'].arrow.setColor('silver');
+    //       this.arrows['arrow4'].line.material.color.set('silver');
+    //       this.arrows['arrow10'].arrow.setColor('silver');
+    //       this.arrows['arrow10'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[5]) {
+    //       this.arrows['arrow12'].arrow.setColor('red');
+    //       this.arrows['arrow12'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow12'].arrow.setColor('silver');
+    //       this.arrows['arrow12'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[6]) {
+    //       this.arrows['arrow5'].arrow.setColor('red');
+    //       this.arrows['arrow5'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow5'].arrow.setColor('silver');
+    //       this.arrows['arrow5'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[7]) {
+    //       this.arrows['arrow6'].arrow.setColor('red');
+    //       this.arrows['arrow6'].line.material.color.set('red');
+    //     } else {
+    //       this.arrows['arrow6'].arrow.setColor('silver');
+    //       this.arrows['arrow6'].line.material.color.set('silver');
+    //     }
+    //     if (this.spikes[8]) {
+    //     } else {
+    //     }
+    //   } catch (error) {
+    //     console.error("Error running network:", error);
+    //   }
+    // },
 
     onClick() {
       // determine which sphere or connection has been clicked on and update the slidersVisible/arrowSlidersVisible array accordingly
@@ -560,6 +560,21 @@ export default {
       object.material.color.copy(color);
     },
 
+    gradientColorMapNetworkArrows(value) {
+      // Interpolate between light red and bright red
+      const hue = 0;
+      const saturation = 1;
+      const lightness = 0.8 - value * 0.3;
+      return new this.THREE.Color().setHSL(hue, saturation, lightness);
+    },
+
+    // Function to update the color of the object based on a value
+    updateObjectColorNetworkArrows(object, value, minValue, maxValue) {
+      const normalizedValue = Math.min(Math.max((value - minValue) / (maxValue - minValue), 0), 1);
+      const color = this.gradientColorMapNetwork(normalizedValue);
+      object.setColor(color);
+    },
+
     gradientColorMap(value, minValue, maxValue) {
         // Ensure that value is within the range [minValue, maxValue]
         value = Math.min(Math.max(value, minValue), maxValue);
@@ -746,7 +761,7 @@ export default {
 
         // listen for when the network has been run and the object colours should be updated
         $nuxt.$on('run-network', (networkPayload) => {
-          const [networkSpikes, max0, max1, max2, max3, max4, max5, max6, max7, max8] = networkPayload;
+          const [max0, max1, max2, max3, max4, max5, max6, max7, max8] = networkPayload;
           this.neuron1 = this.copperScene.scene.getObjectByName("sphere1");
           this.neuron2 = this.copperScene.scene.getObjectByName("sphere2");
           this.neuron3 = this.copperScene.scene.getObjectByName("sphere3");
@@ -766,7 +781,30 @@ export default {
           this.updateObjectColorNetwork(this.neuron7, max6, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron8, max7, this.minValue, this.maxValue);
           this.updateObjectColorNetwork(this.neuron9, max8, this.minValue, this.maxValue);
-          this.runNetwork(networkSpikes)
+          this.updateObjectColorNetworkArrows(this.arrows['arrow1'].arrow, max0, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow1'].line, max0, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow7'].arrow, max0, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow7'].line, max0, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow2'].arrow, max1, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow2'].line, max1, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow9'].arrow, max1, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow9'].line, max1, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow11'].arrow, max2, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow11'].line, max2, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow3'].arrow, max3, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow3'].line, max3, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow8'].arrow, max3, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow8'].line, max3, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow4'].arrow, max4, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow4'].line, max4, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow10'].arrow, max4, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow10'].line, max4, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow12'].arrow, max5, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow12'].line, max5, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow5'].arrow, max6, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow5'].line, max6, this.minValue, this.maxValue);
+          this.updateObjectColorNetworkArrows(this.arrows['arrow6'].arrow, max7, this.minValue, this.maxValue);
+          this.updateObjectColorNetwork(this.arrows['arrow6'].line, max7, this.minValue, this.maxValue);
         });
     },
   },

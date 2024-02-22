@@ -13,6 +13,7 @@ from one_neuronV2 import initialiseLeaky
 from one_neuronV2 import initialiseSynapse
 from one_neuronV2 import initialiseHH
 from network_connection import network
+from network_connection import initialiseNetwork
 from pydantic import BaseModel
 from typing import Dict
 
@@ -20,6 +21,7 @@ from typing import Dict
 dict1 = None
 dict2 = None
 dict3 = None
+dict4 = None
 
 app = FastAPI()
 
@@ -49,13 +51,20 @@ class HHModel(BaseModel):
     multimeterhh: Dict
 
 
+class networkModel(BaseModel):
+    neuronpop: Dict
+    multimeters: Dict
+
+
 @app.get("/single/initialiseLeaky")
 async def callInitialiseLeaky():
     global dict1
     global dict2
     global dict3
+    global dict4
     dict2 = None
     dict3 = None
+    dict4 = None
     if dict1 is None:
         neuron, multimeter = initialiseLeaky()
         dict1 = {"neuron": neuron, "multimeter": multimeter}
@@ -67,8 +76,10 @@ async def callInitialiseSynapse():
     global dict1
     global dict2
     global dict3
+    global dict4
     dict1 = None
     dict3 = None
+    dict4 = None
     if dict2 is None:
         neuron1, neuron2, multimeter1, multimeter2 = initialiseSynapse()
         dict2 = {"neuron1": neuron1, "neuron2": neuron2, "multimeter1": multimeter1, "multimeter2": multimeter2}
@@ -80,12 +91,29 @@ async def callInitialiseHH():
     global dict1
     global dict2
     global dict3
+    global dict4
     dict1 = None
     dict2 = None
+    dict4 = None
     if dict3 is None:
         neuron, multimeter = initialiseHH()
         dict3 = {"neuron": neuron, "multimeter": multimeter}
     return dict3
+
+
+@app.get("/single/initialiseNetwork")
+async def callInitialiseNetwork():
+    global dict1
+    global dict2
+    global dict3
+    global dict4
+    dict1 = None
+    dict2 = None
+    dict3 = None
+    if dict4 is None:
+        neuronpop, multimeters = initialiseNetwork()
+        dict4 = {"neuronpop": neuronpop, "multimeters": multimeters}
+    return dict4
 
 
 @app.get("/single/clearNetwork")
@@ -198,38 +226,71 @@ async def get_synapse_voltage(
 
 
 @app.get(
-    "/network/{currents}/{memCap}/{weights}")
-async def get_voltage(currents: str, memCap: str, weights: str):
-    global dict1
-    global dict2
-    global dict3
-    dict1 = None
-    dict2 = None
-    dict3 = None
+    "/network/{dtfl}/{currents}/{memCap}/{weights}/{neuronpop}/{multimeters}")
+async def get_network_voltage(
+        dtfl: float,
+        currents: str,
+        memCap: str,
+        weights: str,
+        nm4: networkModel = Depends(callInitialiseNetwork)
+):
+    neuronpop_dict = nm4.get("neuronpop", {})
+    multimeters_dict = nm4.get("multimeters", {})
+    neuronpopSim = neuronpop_dict
+    multimetersSim = multimeters_dict
+    print(neuronpopSim)
+    print(multimetersSim)
+
     currents_list = list(map(float, currents.split(',')))
     memCap_list = list(map(float, memCap.split(',')))
     weights_list = list(map(float, weights.split(',')))
 
-    spiked, v0, v1, v2, v3, v4, v5, v6, v7, v8, t = network(currents_list, memCap_list, weights_list)
-    max0 = max(v0)
-    max1 = max(v1)
-    max2 = max(v2)
-    max3 = max(v3)
-    max4 = max(v4)
-    max5 = max(v5)
-    max6 = max(v6)
-    max7 = max(v7)
-    max8 = max(v8)
-    data0 = [{"y": volt0, "x": times} for volt0, times in zip(v0, t)]
-    data1 = [{"y": volt1, "x": times} for volt1, times in zip(v1, t)]
-    data2 = [{"y": volt2, "x": times} for volt2, times in zip(v2, t)]
-    data3 = [{"y": volt3, "x": times} for volt3, times in zip(v3, t)]
-    data4 = [{"y": volt4, "x": times} for volt4, times in zip(v4, t)]
-    data5 = [{"y": volt5, "x": times} for volt5, times in zip(v5, t)]
-    data6 = [{"y": volt6, "x": times} for volt6, times in zip(v6, t)]
-    data7 = [{"y": volt7, "x": times} for volt7, times in zip(v7, t)]
-    data8 = [{"y": volt8, "x": times} for volt8, times in zip(v8, t)]
-    data = {"spikes": spiked, "data0": data0, "data1": data1, "data2": data2, "data3": data3, "data4": data4,
+    [v0, v1, v2, v3, v4, v5, v6, v7, v8, t] = network(neuronpopSim, multimetersSim, dtfl, currents_list, memCap_list,
+                                                      weights_list)
+
+    if len(t) >= 99:
+        v0_new = v0[-99:]
+        v1_new = v1[-99:]
+        v2_new = v2[-99:]
+        v3_new = v3[-99:]
+        v4_new = v4[-99:]
+        v5_new = v5[-99:]
+        v6_new = v6[-99:]
+        v7_new = v7[-99:]
+        v8_new = v8[-99:]
+    else:
+        v0_new = v0
+        v1_new = v1
+        v2_new = v2
+        v3_new = v3
+        v4_new = v4
+        v5_new = v5
+        v6_new = v6
+        v7_new = v7
+        v8_new = v8
+    times_new = []
+    for i in range(1, 100):
+        times_new.append(i)
+    max0 = (v0_new[-1])
+    max1 = (v1_new[-1])
+    max2 = (v2_new[-1])
+    max3 = (v3_new[-1])
+    max4 = (v4_new[-1])
+    max5 = (v5_new[-1])
+    max6 = (v6_new[-1])
+    max7 = (v7_new[-1])
+    max8 = (v8_new[-1])
+
+    data0 = [{"y": volt0, "x": times} for volt0, times in zip(v0_new, times_new)]
+    data1 = [{"y": volt1, "x": times} for volt1, times in zip(v1_new, times_new)]
+    data2 = [{"y": volt2, "x": times} for volt2, times in zip(v2_new, times_new)]
+    data3 = [{"y": volt3, "x": times} for volt3, times in zip(v3_new, times_new)]
+    data4 = [{"y": volt4, "x": times} for volt4, times in zip(v4_new, times_new)]
+    data5 = [{"y": volt5, "x": times} for volt5, times in zip(v5_new, times_new)]
+    data6 = [{"y": volt6, "x": times} for volt6, times in zip(v6_new, times_new)]
+    data7 = [{"y": volt7, "x": times} for volt7, times in zip(v7_new, times_new)]
+    data8 = [{"y": volt8, "x": times} for volt8, times in zip(v8_new, times_new)]
+    data = {"data0": data0, "data1": data1, "data2": data2, "data3": data3, "data4": data4,
             "data5": data5, "data6": data6, "data7": data7, "data8": data8, "max0": max0, "max1": max1, "max2": max2,
             "max3": max3, "max4": max4, "max5": max5, "max6": max6, "max7": max7, "max8": max8}
     return data

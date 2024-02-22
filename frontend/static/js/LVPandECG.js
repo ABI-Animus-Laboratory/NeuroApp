@@ -182,8 +182,8 @@ function loadChart2(ecg2, category, timeOffset) {
             minorTicks: true,
             minorLabels: true,
             microTicks: true,
-            min: -73,
-            max: -68,
+            min: -71,
+            max: -67,
             font: "normal normal normal 10pt Helvetica",
             fontColor: "#fff",
             labels: [
