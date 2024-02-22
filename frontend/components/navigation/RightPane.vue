@@ -52,8 +52,8 @@ export default {
 .model-panel {
   // width: 100vw;
   // height: auto;
-  flex: 1; 
-  
+  flex: 1;
+
 }
 .model-rate {
   position: relative;

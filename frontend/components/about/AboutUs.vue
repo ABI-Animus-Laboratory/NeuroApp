@@ -33,7 +33,7 @@
           <v-card-text>
             <div class="text-h6 text--darken-6">Website Developers</div>
             <div class="text--darken-4 pl-6">
-              Members Here <br />
+              Chris Neville-Dowler <br />
             </div>
           </v-card-text>
         </div>
