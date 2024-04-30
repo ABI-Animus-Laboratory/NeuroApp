@@ -61,7 +61,7 @@ export default {
       teamSelected: false,
       researchSelected: true,
       select: "",
-      items: ["latest", "version 2.0", "version 1.0"],
+      items: ["latest"],
     };
   },
 
@@ -74,13 +74,7 @@ export default {
     onselectChange(select) {
       if (select === "latest")
         window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/";
-      if (select === "version 2.0")
-        window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/v2/";
-      if (select === "version 1.0")
-        window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/v1/";
+          "";
     },
   },
 };
