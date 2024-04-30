@@ -4,7 +4,7 @@
     "heading": "Leaky integrate-and-fire",
     "icon": "mdi-circle-outline",
     "subTopics": {
-      "heart": {
+      "neuroapp": {
         "title": "Leaky IAF",
         "heading": "Single neuron model",
         "icon": "mdi-home-heart",
