@@ -1,2 +1,9 @@
 fastapi
 uvicorn
+
+numpy
+scipy
+matplotlib
+nose
+nest-simulator
+
