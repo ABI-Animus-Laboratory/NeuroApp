@@ -31,9 +31,13 @@
       <div>
         <div class="mx-auto contributor" max-width="344">
           <v-card-text>
-            <div class="text-h6 text--darken-6">Website Developers</div>
+            <div class="text-h6 text--darken-6">Contributors</div>
             <div class="text--darken-4 pl-6">
-              Chris Neville-Dowler <br />
+              Chris Neville-Dowler <br/>
+              Linkun Gao <br/>
+              Chinchien <br/>
+              Cameron Apeldoorn <br/>
+              Gonzalo Maso Talou <br/>
             </div>
           </v-card-text>
         </div>
