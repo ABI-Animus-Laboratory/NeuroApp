@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  neuro_app_frontend:
+    image: neuro-app-frontend:0.1.0
+    restart: always
+    ports:
+      - "3000:3000"
+
+  neuro_app_backend:
+    image: neuro-app-backend:0.1.0
+    restart: always
+    ports:
+      - "8000:8000"
+
+#sudo docker-compose up
+#sudo docker-compose stop
