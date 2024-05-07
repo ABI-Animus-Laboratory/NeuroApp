@@ -18,22 +18,26 @@
           <v-btn plain @click="toggleNavigation('team')"> Our Team </v-btn>
         </div>
       </div>
-      <div class="feedback font-weight-medium text--primary">
-        Visit our
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLScsab93B7uPg389gxCNfCSgG4sMNIFk_mxDFTFF_-UC2TcSJQ/viewform?usp=sf_link"
-          target="view_window"
-          >Online form</a
-        >
-        to give us your valuable feedback about this app.
-      </div>
+<!--      <div class="feedback font-weight-medium text&#45;&#45;primary">-->
+<!--        Visit our-->
+<!--        <a-->
+<!--          href=""-->
+<!--          target="view_window"-->
+<!--          >Online form</a-->
+<!--        >-->
+<!--        to give us your valuable feedback about this app.-->
+<!--      </div>-->
 
       <div>
         <div class="mx-auto contributor" max-width="344">
           <v-card-text>
-            <div class="text-h6 text--darken-6">Website Developers</div>
+            <div class="text-h6 text--darken-6">Contributors</div>
             <div class="text--darken-4 pl-6">
-              Chris Neville-Dowler <br />
+              Chris Neville-Dowler <br/>
+              Linkun Gao <br/>
+              Chinchien <br/>
+              Cameron Apeldoorn <br/>
+              Gonzalo Maso Talou <br/>
             </div>
           </v-card-text>
         </div>
@@ -61,7 +65,7 @@ export default {
       teamSelected: false,
       researchSelected: true,
       select: "",
-      items: ["latest", "version 2.0", "version 1.0"],
+      items: ["latest"],
     };
   },
 
@@ -74,13 +78,7 @@ export default {
     onselectChange(select) {
       if (select === "latest")
         window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/";
-      if (select === "version 2.0")
-        window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/v2/";
-      if (select === "version 1.0")
-        window.location.href =
-          "https://uoa-heart-mechanics-research.github.io/medtech-heart/v1/";
+          "";
     },
   },
 };
